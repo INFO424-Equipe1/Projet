@@ -1,4 +1,6 @@
 format pgm
 
 PGM est un format d'images bitmaps créé par Jef Poskanzer en 1988. Il découle du format PBM inventé 8 ans plus tôt. 
-Ce format est utilisé principalement pour des images constituées de différents niveaux de gris. Les niveaux de gris sont codés à l'aide de valeur comprise entre 0 et x. x est la valeur maximale de l'intensité choisie. Par définition, un pixel noir est représenté par la valeur 0 tandis qu'un pixel blanc est lui représenté par la valeur de x.
+Ce format est utilisé principalement pour des images constituées de différents niveaux de gris. 
+Les niveaux de gris sont codés à l'aide de valeur comprise entre 0 et x. x est la valeur maximale de l'intensité choisie.
+Par définition, un pixel noir est représenté par la valeur 0 tandis qu'un pixel blanc est lui représenté par la valeur de x.
