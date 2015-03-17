@@ -35,9 +35,9 @@ public class Matrice {
 	 * des couleurs de l'image (utile pour les images.ppm)
 	 */
 
-	this.largeur = Integer.parseInt(largeur_img);
 	/* Integer.parseInt("String") permet de tranformer un String en int */
-	this.hauteur = Integer.parseInt(hauteur_img);
+	this.largeur = Integer.parseInt(largeur_img);
+      	this.hauteur = Integer.parseInt(hauteur_img);
 	this.nuances = Integer.parseInt(nuances_img);
 	this.image = new int[this.hauteur][this.largeur];
 	for (int i=0 ; i<this.hauteur ; i++) {
