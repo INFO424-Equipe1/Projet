@@ -12,6 +12,7 @@ public class Analyseur_Image {
 
 	    // On ouvre l'entrée
 	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
 	    // format_img va stocker le numero magique lié au format (p1, p2 ...)
 	    try {
 		String format_img = br.readLine();
@@ -53,7 +54,9 @@ public class Analyseur_Image {
 	    
 
 	    // caracteres va stocker le codage de l'image 
-	    String[][] caracteres = new String[Integer.parseInt(dimension[2])][Integer.parseInt(dimension[1])];	    
+	    String[][] caracteres =
+		new String[Integer.parseInt(dimension[1])][Integer.parseInt(dimension[0])];    
+
 	    // fin devient true quand on a terminé
 	    boolean fin = false;
 	    
@@ -88,7 +91,7 @@ public class Analyseur_Image {
 	    }
 
 	    // mat va stocker notre image (en transformant les string en int)
-	    Matrice mat = new Matrice( caracteres, dimension[2] , dimension[1]
+	    Matrice mat = new Matrice( caracteres, dimension[1] , dimension[2]
 					   , nuances_img );
 		
 
