@@ -8,7 +8,7 @@ USE Ada.Strings.Unbounded.Text_Io;
 procedure synthese is
 	
 	
-   n,m,x,y,Ax,Ay,Bx,By,Cx,Cy,longeur,largeur,rayon:Integer;
+   n,M,X,Y,Ax,Ay,Bx,By,Cx,Cy,longeur,largeur,rayon:Integer;
  
    nomf : String(1..255);
    longueur : Natural;
@@ -18,7 +18,7 @@ procedure synthese is
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
 	
-   type Matrice is array(0..8,0..8) of integer;
+   type Matrice is array(0..10,0..10) of integer;
    image : matrice;
 	
    procedure Dessin_Rectangle(x1,y1,longrec,Largrec:in Integer) is 
@@ -33,7 +33,7 @@ procedure synthese is
    
       
       
-   procedure Dessin_Triangle (x1,Y1,X2,Y2,X3,Y3: in Integer) is
+   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3: in Integer) is
       P,D:Integer;
 	 
    begin
@@ -74,9 +74,11 @@ procedure synthese is
 	       Image(I,(P*I + D)):=0;
 	    End loop;
 	 end if;
+       end if ; 
+       
 	 
 	   
-      elsif y1=y3 then
+       if y1=y3 then
 	 for I in X1..X3 loop
 	    Image(I,Y1):=0;
 	 End loop;
@@ -106,9 +108,11 @@ procedure synthese is
 	   Image(I,(P*I + D)):=0;
 	   End loop;
 	 end if;
+       end if ; 
+       
 	 
 	 
-      elsif y2=y3 then
+       if y2=y3 then
 	 for I in X2..X3 loop
 	    Image(I,Y2):=0;
 	 End loop;
@@ -119,28 +123,44 @@ procedure synthese is
 	     for I in (X2+1)..X1 loop 
 		Image(I,(P*I + D)):=0;
 	     End loop;
-	  else
-	      for I in (X1+1)..X2 loop 
-		Image(I,(P*I + D)):=0;
+	  else    
+	     for I in X1+1..X2 loop
+		 Image(i,(P*i+D)):=0;
 	     End loop;
 	  end if;
 	  
 	 
 	  P:=((Y1-Y3)/(X1-X3));
-	 D:=Y3 - P*X3;
-	 for I in (X3+1)..X1 loop --
-	    Image(I,(P*I + D)):=0;
-	 End loop;
-      end if;
+	  D:=Y3 - P*X3;
+	  if X1<X3 then
+	     for I in (X1+1)..X3 loop
+		 Image(I,(P*I + D)):=0;
+	     End loop;
+	  else
+	     for I in (X3+1)..X1 loop --
+		Image(I,(P*I + D)):=0;
+	     End loop;
+	  end if;
+       end if; 	  
     
    end Dessin_Triangle;
    
+   procedure Dessin_Cercle (X,Y,Rayon: in integer) is 
+   begin 
+      for I in 0..N loop
+	 for J in 0..M loop
+	    if (I-X)**2+(J-Y)**2= Rayon**2 then 
+	       Image(I,J):=0;
+	    end if; 
+	 end loop;
+      end loop;
       
-     
+   end Dessin_Cercle;
+         
 begin
    
-   n:=8;
-   m:=8;
+   n:=10;
+   m:=10;
     for i in 0..n loop
     	for j in 0..m loop
     		image(i,j):=1;
@@ -194,9 +214,20 @@ begin
 	end loop;
        
     elsif nomf = "Cercle" then
-       put ("Donner le rayon du cercle");
-       get (Rayon);
-       else Put ("Erreur");
+       Skip_Line;
+       Put_Line ("Donner le rayon du cercle");
+       Get (Rayon); Skip_Line;
+       Put_Line ("Donner le centre du cercle");
+       Get (X);Skip_Line;
+       Get (Y);Skip_Line;
+       Dessin_Cercle (X,Y,Rayon);
+       for i in 0..n loop
+	   for j in 0..m loop
+    		Put(image(i,j));
+	   end loop;
+	   Put_Line("");
+       end loop;       
+    else Put ("Erreur");
     end if;
 end synthese;
 
