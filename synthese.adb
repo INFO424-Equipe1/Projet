@@ -8,7 +8,7 @@ USE Ada.Strings.Unbounded.Text_Io;
 procedure synthese is
 	
 	
-   n,m,x,y,Ax,Ay,Bx,By,Cx,Cy,longeur,largeur,rayon:Integer;
+   n,M,X,Y,Ax,Ay,Bx,By,Cx,Cy,longeur,largeur,rayon:Integer;
  
    nomf : String(1..255);
    longueur : Natural;
@@ -33,50 +33,58 @@ procedure synthese is
    
       
       
-   procedure Dessin_Triangle (x1,Y1,X2,Y2,X3,Y3: in Integer) is
-      P,D:Integer;
+   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3: in Integer) is
+      P,D,P0,D0,P1,D1:Integer ;
 	 
    begin
       --Si la base est AB
       --construction de la base
-       if y1=y2 then
-	 for I in X1..X2 loop
-	    Image(I,Y1):=0;
-	 End loop;
-	 --on charche l'équation de la droite AC
-	 P:=((Y3-Y1)/(X3-X1));
-	 D:=Y1 - P*X1;
+      if y1=y2 then
+	 if X1>X2 then	    
+	    for I in X2..X1 loop	       
+	       Image(I,Y1):=0;	       
+	    End loop;
+	 else
+	     for I in X1..X2 loop
+		Image(I,Y1):=0;
+	     End loop;
+     	 end if;
+	 
+	 --on cherche l'équation de la droite AC
+	 P0:=((Y3-Y1)/(X3-X1));
+	 D0:=(Y1 - P0*X1);
 	 --Si Ax<Cx on trace une droite AC en incrémentant de A à C
 	 if X1<X3 then
 	    
 	    for I in (X1+1)..X3 loop
-	       Image(I,(P*I + D)):=0;
+	       Image(I,abs(P0*I + D0)):=0;
 	    End loop;
 	    --si Ax>Cx on trace une droite en incrémentant de C à A
 	 else   
 	     for I in (X3+1)..X1 loop 
-	       Image(I,(P*I + D)):=0;
+	       Image(I,abs((P0*I + D0))):=0;
 	     End loop;
 	 end if;
 	 
 	 -- on cherche l'équation de la droite BC
-	 P:=((Y3-Y2)/(X3-X2));
-	 D:=Y2 - P*X2;
+	 P1:=((Y3-Y2)/(X3-X2));
+	 D1:=(Y2 - P1*X2);
 	 --Si Bx<Cx on trace une droite BC en incrémentant de B à C
-	 if X2<X3 then
-	    
+	 if X2<X3 then 
 	    for I in (X2+1)..X3 loop 
-	       Image(I,(P*I + D)):=0;
+	       Image(I,abs((P1*I + D1))):=0;
 	    End loop;
 	     --si Bx>Cx on trace une droite en incrémentant de C à B
 	 else
 	    for I in (X3+1)..X2 loop 
-	       Image(I,(P*I + D)):=0;
+	       Image(I,abs((P1*I + D1))):=0;
 	    End loop;
 	 end if;
+       end if ; 
+       
 	 
 	   
-      elsif y1=y3 then
+       if y1=y3 then
 	 for I in X1..X3 loop
 	    Image(I,Y1):=0;
 	 End loop;
@@ -106,9 +114,11 @@ procedure synthese is
 	   Image(I,(P*I + D)):=0;
 	   End loop;
 	 end if;
+       end if ; 
+       
 	 
 	 
-      elsif y2=y3 then
+       if y2=y3 then
 	 for I in X2..X3 loop
 	    Image(I,Y2):=0;
 	 End loop;
@@ -119,24 +129,40 @@ procedure synthese is
 	     for I in (X2+1)..X1 loop 
 		Image(I,(P*I + D)):=0;
 	     End loop;
-	  else
-	      for I in (X1+1)..X2 loop 
-		Image(I,(P*I + D)):=0;
+	  else    
+	     for I in X1+1..X2 loop
+		 Image(i,(P*i+D)):=0;
 	     End loop;
 	  end if;
 	  
 	 
 	  P:=((Y1-Y3)/(X1-X3));
-	 D:=Y3 - P*X3;
-	 for I in (X3+1)..X1 loop --
-	    Image(I,(P*I + D)):=0;
-	 End loop;
-      end if;
+	  D:=Y3 - P*X3;
+	  if X1<X3 then
+	     for I in (X1+1)..X3 loop
+		 Image(I,(P*I + D)):=0;
+	     End loop;
+	  else
+	     for I in (X3+1)..X1 loop --
+		Image(I,(P*I + D)):=0;
+	     End loop;
+	  end if;
+       end if; 	  
     
    end Dessin_Triangle;
    
+   procedure Dessin_Cercle (X,Y,Rayon: in integer) is 
+   begin 
+      for I in 0..N loop
+	 for J in 0..M loop
+	    if (I-X)**2+(J-Y)**2= Rayon**2 then 
+	       Image(I,J):=0;
+	    end if; 
+	 end loop;
+      end loop;
       
-     
+   end Dessin_Cercle;
+         
 begin
    
    n:=8;
@@ -193,14 +219,21 @@ begin
 	   Put_Line("");
 	end loop;
        
-    elsif nomf = "Cercle" then
-       put ("Donner le rayon du cercle");
-       get (Rayon);
-       else Put ("Erreur");
+    elsif Nomf(1..Longueur) = "Cercle" then
+       Put_Line ("Donner le rayon du cercle");
+       Get (Rayon); Skip_Line;
+       Put_Line ("Donner le centre du cercle");
+       Get (X);Skip_Line;
+       Get (Y);Skip_Line;
+       Dessin_Cercle (X,Y,Rayon);
+       for i in 0..n loop
+	   for j in 0..m loop
+    		Put(image(i,j));
+	   end loop;
+	   Put_Line("");
+       end loop;       
+    else Put ("Erreur");
     end if;
 end synthese;
-
-
-
 
 
