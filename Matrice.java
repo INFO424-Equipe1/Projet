@@ -64,4 +64,51 @@ public class Matrice {
 	return this.nuances;
     }
     
+    public static void analyse_pgm () {
+	/* Procedure qui analyse l'image .pgm 
+	 * Affiche les résultats de l'analyse
+	 */ 
+
+	if (this.nuances == 1) {
+	    // Si on a une image seulement avec du noir et du blanc
+	    
+	    int l = 0;
+	    int l_max = 0;
+	    int h = 0;
+	    // On parcourt notre image
+	    for (int i=0; i<this.hauteur ; i++) {
+       
+		for (int j=0; j<this.largeur ; j++) {
+		    if (this.image[i][j] == 0) {
+			l++ ;
+			
+		    }
+		    if (j == this.largeur -1) {
+		        h++;
+			    
+		    }
+				    
+	    	}
+
+		if (l > l_max) {
+		    l_max = l ;
+		}
+		l = 0 ;
+	    }
+
+	    if (l_max = l) {
+		
+	}
+
+
+    }
+    
+    public static void analyse_ppm () {
+	/* Procedure qui analyse l'image .ppm 
+	 * Affiche les résultats de l'analyse
+	 */ 
+
+    }
+
+
 }

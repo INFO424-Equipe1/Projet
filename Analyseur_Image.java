@@ -10,16 +10,24 @@ public class Analyseur_Image {
 	
         public static void main(String[] args){ 
 
+	    /* 
+	    **  Récupération de l'image (lecture et stockage)  
+	    */
+
 	    // On ouvre l'entrée
 	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+	    
+	    
 	    // format_img va stocker le numero magique lié au format (p1, p2 ...)
+	    String format_img = null; 
+
 	    try {
-		String format_img = br.readLine();
+		format_img = br.readLine();
 	    } catch (IOException ioe) {
 		System.out.println( "Erreur de lecture" );
 		System.exit(1);
 	    }
+	    
 
 	    // ligneCourante va stocker la ligne lue
 	    String ligneCourante = null;
@@ -94,8 +102,35 @@ public class Analyseur_Image {
 	    Matrice mat = new Matrice( caracteres, dimension[1] , dimension[2]
 					   , nuances_img );
 		
+	    
+	    
+	    /*
+	    ** Analyse de l'image
+	    */ 
+	    
+	    
+	    // On regarde le format de l'image 
+	    if (format_img == "P2") {
+		// Si l'image est en pgm (nuances de gris)
+		mat.analyse_pgm();
+		System.out.println("Analyse terminee ");
+	    }
 
+	    else {
+		if (format_img == "P5") {
+     		    // Si l'image est en ppm (couleurs)
+		    mat.analyse_ppm();
+		    System.out.println("Analyse terminee ");
+		}
 
+		else {
+		    // Format d'image non supporté ou inexistant
+		    System.out.println("Format d'image non supporte");
+		    System.exit(1);
+		}
+	    }
+	    
+	    
 
 	}
 

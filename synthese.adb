@@ -18,7 +18,7 @@ procedure synthese is
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
 	
-   type Matrice is array(0..8,0..8) of integer;
+   type Matrice is array(0..10,0..10) of integer;
    image : matrice;
 	
    procedure Dessin_Rectangle(x1,y1,longrec,Largrec:in Integer) is 
@@ -34,7 +34,11 @@ procedure synthese is
       
       
    procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3: in Integer) is
+<<<<<<< HEAD
       P,D,P0,D0,P1,D1:Integer ;
+=======
+      P,D:Integer;
+>>>>>>> a53afc22c08f61801eb0e94e79e91722199e971d
 	 
    begin
       --Si la base est AB
@@ -165,8 +169,8 @@ procedure synthese is
          
 begin
    
-   n:=8;
-   m:=8;
+   n:=10;
+   m:=10;
     for i in 0..n loop
     	for j in 0..m loop
     		image(i,j):=1;
@@ -219,7 +223,12 @@ begin
 	   Put_Line("");
 	end loop;
        
+<<<<<<< HEAD
     elsif Nomf(1..Longueur) = "Cercle" then
+=======
+    elsif nomf = "Cercle" then
+       Skip_Line;
+>>>>>>> a53afc22c08f61801eb0e94e79e91722199e971d
        Put_Line ("Donner le rayon du cercle");
        Get (Rayon); Skip_Line;
        Put_Line ("Donner le centre du cercle");
