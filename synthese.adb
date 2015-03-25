@@ -4,21 +4,25 @@ USE Ada.Text_IO;
 USE Ada.Integer_Text_IO ;
 WITH Ada.Strings.Unbounded.Text_Io;
 USE Ada.Strings.Unbounded.Text_Io;
+with Ada.Command_line;
+Use Ada.Command_Line;
+
 
 procedure synthese is
 	
 	
-   n,m,X,Y,Ax,Ay,Bx,By,Cx,Cy,longeur,largeur,rayon:Integer;
+   n,m,X,Y,Ax,Ay,Bx,By,Cx,Cy,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K:Integer;
  
-   nomf : String(1..255);
-   longueur : Natural;
-   
+   NomT: String(1..8);
+   NomC: String(1..6);
+   NomR: String(1..9);
+      
 	
    type Forme is (Rectangle, Triangle ,Cercle);
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
 	
-   type Matrice is array(0..8,0..8) of integer;
+   type Matrice is array(0..1000,0..1000) of integer;
    image : matrice;
 	
    procedure Dessin_Rectangle(x1,y1,longrec,Largrec:in Integer) is 
@@ -34,7 +38,7 @@ procedure synthese is
       
       
    procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3: in Integer) is
-      P,D,P0,D0,P1,D1:Integer ;
+      P,D:Integer ;
 
 	 
    begin
@@ -151,6 +155,21 @@ procedure synthese is
        end if; 	
        
        -- Remplissage du triangle
+       Minx := Integer'Min(Integer'Min (AX,BX),Integer'Min (BX,CY));
+       Maxx := Integer'Max(Integer'Max (AX,BX),Integer'Max (BX,CX));
+       Miny := Integer'Min(Integer'Min (Ay,BY),Integer'Min (BY,Cy));
+       Maxy := Integer'Max(Integer'Max (Ay,BY),Integer'Max (BY,Cy));
+       for J in Miny..Maxy-1 loop
+	  Maxx:=Maxx-1;
+	  for I in Minx..Maxx loop
+      	     if Image(I,J)=0 then
+		if Image(I+1,J)=1 then
+		   Image(I+1,J):=0;
+		end if;
+	      end if;
+	  end loop;
+       end loop;
+       
         
    end Dessin_Triangle;
    
@@ -168,64 +187,102 @@ procedure synthese is
          
 begin
    
-   n:=8;
-   m:=8;
+  -- Put( "Les arguments sont : ") ;
+  -- for Arg in 1..Argument_Count loop
+  --    Put(Argument(Arg) & ", ");
+ --  end loop;
+ --  New_Line;
+   
+   K:=1;
+   while K< Argument_Count loop
+      if Argument(K) = "--taille" then 
+	 N:= Integer'Value(Argument(K+1));
+	 M:= Integer'Value(Argument(K+2));
+      elsif Argument(K)="--Cercle" then 
+	 NomC:= ("Cercle");
+	 X:= Integer'Value(Argument(K+1));
+	 Y:= Integer'Value(Argument(K+2));
+	 Rayon:= Integer'Value(Argument(K+3));
+      elsif Argument(K)="--Rectangle" then
+	 NomR := "Rectangle";
+	 X:= Integer'Value(Argument(K+1));
+	 Y:= Integer'Value(Argument(K+2));
+	 Longeur:= Integer'Value(Argument(K+3));
+	 Largeur:= Integer'Value(Argument(K+4));
+      elsif Argument(K)="--Triangle" then
+	 NomT:= "Triangle";
+	 AX:= Integer'Value(Argument(K+1));
+	 AY:= Integer'Value(Argument(K+2));
+	 BX:= Integer'Value(Argument(K+3));
+	 BY:= Integer'Value(Argument(K+4));
+	 CX:= Integer'Value(Argument(K+5));
+	 CY:= Integer'Value(Argument(K+6));
+      end if;
+     K:=K+1;
+   end loop;
+   
+	 
+	 
+	 
+	 
+	
+  
+  
     for i in 0..n loop
     	for j in 0..m loop
     		image(i,j):=1;
     	end loop;
     end loop;
     
-    Put_line("Donner le nom de la figure.");
-    Get_Line(nomf, longueur);
-    Put( "--" );
-    Put( Nomf(1..Longueur) );
-    Put( "--" );
-    New_Line;
-    
-    
-    if Nomf(1..Longueur) = "Rectangle" then
-        Put_line("Donner le point initial de la figure : ");
-        Get(X); Skip_Line;
-        Get(Y); Skip_Line;
-    	Put_line("Donner la longeur et la largeur");
-	get (Longeur) ;
-	get (Largeur);
+   -- Put_line("Donner le nom de la figure.");
+  --  Get_Line(nomf, longueur);
+  --  Put( "--" );
+   -- Put( Nomf(1..Longueur) );
+   -- Put( "--" );
+   -- New_Line;
+ 
+
+    if NomR = "Rectangle" then
+        --Put_line("Donner le point initial de la figure : ");
+       -- Get(X); Skip_Line;
+        --Get(Y); Skip_Line;
+    --	Put_line("Donner la longeur et la largeur");
+	--get (Longeur) ;
+	--get (Largeur);
 	Dessin_Rectangle (X,Y,longeur, Largeur);
 	
 	
-    elsif Nomf(1..Longueur) = "Triangle" then
+    elsif NomT = "Triangle" then
        
-       Put_line ("Donner les coordonnées des 3 sommets  ");
+     --  Put_line ("Donner les coordonnées des 3 sommets  ");
        
-       Put_line("coordonnées du point A");
-       Get(Ax);Skip_Line;
-       Get(Ay);Skip_Line;
+       --Put_line("coordonnées du point A");
+      -- Get(Ax);Skip_Line;
+      -- Get(Ay);Skip_Line;
        
-       Put_line("Coordonnées Du Point B");
-       Get(Bx);Skip_Line;
-       Get(By);Skip_Line;
+      -- Put_line("Coordonnées Du Point B");
+       --Get(Bx);Skip_Line;
+      -- Get(By);Skip_Line;
        
-       Put_line("coordonnées du poit C");
-       Get(Cx);Skip_Line;
-       Get(Cy);Skip_Line;
+      -- Put_line("coordonnées du poit C");
+      -- Get(Cx);Skip_Line;
+      -- Get(Cy);Skip_Line;
        
        Dessin_Triangle(Ax,Ay,Bx,By,Cx,Cy);
-       Put (Integer'Min(Integer'Max (Ay,BY),Integer'Max (BY,Cy)));
        	
     
        
-   elsif Nomf(1..Longueur) = "Cercle" then
+   elsif NomC = "Cercle" then
 
-       Put_Line ("Donner le rayon du cercle");
-       Get (Rayon); Skip_Line;
-       Put_Line ("Donner le centre du cercle");
-       Get (X);Skip_Line;
-       Get (Y);Skip_Line;
-       Dessin_Cercle (X,Y,Rayon);
+    --   Put_Line ("Donner le rayon du cercle");
+    --   Get (Rayon); Skip_Line;
+    --   Put_Line ("Donner le centre du cercle");
+    --   Get (X);Skip_Line;
+    --   Get (Y);Skip_Line;
+      
+      Dessin_Cercle (X,Y,Rayon);
            
     end if;
-    Skip_Line;
     Put_Line("P2");
     Put(n);Put(m);
     New_Line;
