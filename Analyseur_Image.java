@@ -23,6 +23,7 @@ public class Analyseur_Image {
 
 	    try {
 		format_img = br.readLine();
+		format_img.replaceAll( "\\s+", " ");
 	    } catch (IOException ioe) {
 		System.out.println( "Erreur de lecture" );
 		System.exit(1);
@@ -66,13 +67,14 @@ public class Analyseur_Image {
 		new String[Integer.parseInt(dimension[1])][Integer.parseInt(dimension[0])];    
 
 	    // fin devient true quand on a terminé
-	    boolean fin = false;
+	    boolean fin = true;
 	    
-	    int l = 0;
-	    int h = 0;
-	    
-	    while ( ! fin ) {
+	   
+	    int h =0;
+	    while ( fin && h < Integer.parseInt(dimension[1]) ) {
 		try {
+		    int l = 0;
+		    
 		    ligneCourante = br.readLine();
 		    if ( ligneCourante != null ) {
 			ligneCourante.replaceAll( "\\s+", " ");
@@ -88,7 +90,7 @@ public class Analyseur_Image {
 		    }
 		
 		    else {
-			fin = true;
+			fin = false;
 		    }
 		} catch (IOException ioe) {
 		    System.out.println( "Erreur de lecture" );
@@ -99,7 +101,7 @@ public class Analyseur_Image {
 	    }
 
 	    // mat va stocker notre image (en transformant les string en int)
-	    Matrice mat = new Matrice( caracteres, dimension[1] , dimension[2]
+	    Matrice mat = new Matrice( caracteres, dimension[0] , dimension[1]
 					   , nuances_img );
 		
 	    
@@ -107,25 +109,33 @@ public class Analyseur_Image {
 	    /*
 	    ** Analyse de l'image
 	    */ 
-	    
+
+	    System.out.println("--- Analyse de l'image ---");
+	    System.out.println();
+	    System.out.println("   Image   ");
+	    System.out.println("Format : "+format_img);
+	    System.out.println("Dimension : "+dimension[0]+" par "+dimension[1]);
+	    System.out.println("Nuances : "+nuances_img);
+	    System.out.println();
+	    System.out.println("Résultats de l'analyse :");
 	    
 	    // On regarde le format de l'image 
-	    if (format_img == "P2") {
+	    if (format_img.equals("P2")) {
 		// Si l'image est en pgm (nuances de gris)
 		mat.analyse_pgm();
-		System.out.println("Analyse terminee ");
+		System.out.println("Analyse terminée ");
 	    }
 
 	    else {
-		if (format_img == "P5") {
+		if (format_img.equals("P5")) {
      		    // Si l'image est en ppm (couleurs)
-		    mat.analyse_ppm();
-		    System.out.println("Analyse terminee ");
+		    //mat.analyse_ppm();
+		    System.out.println("Analyse terminée ");
 		}
 
 		else {
 		    // Format d'image non supporté ou inexistant
-		    System.out.println("Format d'image non supporte");
+		    System.out.println("Format d'image non supporté");
 		    System.exit(1);
 		}
 	    }
