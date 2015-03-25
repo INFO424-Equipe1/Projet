@@ -72,27 +72,33 @@ public class Matrice {
 	if (this.nuances == 1) {
 	    // Si on a une image seulement avec du noir et du blanc
 	    
-	    int l = 0;
-	    int l_max = 0;
-	    int h = 0;
+	    int l = 0; // Compteur de la largeur de la figure sur une ligne
+	    int l_max = 0; // Valeur maximale de la largeur de la figure
+	    int h = 0; // hauteur de la figure
+	    // coordonnées du point d'origine de la figure
+	    int x=0 ;
+	    int y=0 ; 
 	    // On parcourt notre image
 	    for (int i=0; i<this.hauteur ; i++) {
        
 		for (int j=0; j<this.largeur ; j++) {
 		    if (this.image[i][j] == 0) {
 			l++ ;
+			if (x=0 && y=0) {
+			    // on regarde le premier point de la figure
+			    x = j;
+			    y = i;
+			}
 			
+						
 		    }
-		    if (j == this.largeur -1) {
-		        h++;
-			    
-		    }
-				    
+		    	    
 	    	}
 
 		if (l > l_max) {
 		    l_max = l ;
 		}
+		
 		l = 0 ;
 	    }
 
