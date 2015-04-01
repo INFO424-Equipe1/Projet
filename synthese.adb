@@ -37,24 +37,75 @@ procedure synthese is
    
       
       
-   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3: in Integer) is
-      P,D:Integer ;
+   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3: in out Integer) is
+      P,D,Tempx,Tempy,Y:Integer ;
+      Delt,Error,Dx,Dy : Float;
 
 	 
    begin
       --Si la base est AB
       --construction de la base
-      if y1=y2 then
-	 if X1>X2 then	    
-	    for I in X2..X1 loop	       
-	       Image(I,Y1):=0;	       
-	    End loop;
-	 else
-	     for I in X1..X2 loop
-		Image(I,Y1):=0;
-	     End loop;
-     	 end if;
-	 
+      if Y1=Y3 then
+	 Tempx := X3;
+	 Tempy := Y3;
+	 X3 := X2;
+	 Y3 := Y2;
+	 X2 := Tempx;
+	 Y2 :=Tempy;
+      else if 
+	Y2=Y3 then
+	 Tempx := X3;
+	 Tempy := Y3;
+	 X3 := X1;
+	 Y3 := Y1;
+	 X1 := Tempx;
+	 Y1 :=Tempy;
+      end if;
+      end if;
+      
+       
+      if X1>X2 then	
+	 for I in X2..X1 loop
+	    Image(Y1,I):=0;
+	 End loop;
+      else
+	 for I in X1..X2 loop  
+	    Image(Y1,I):=0;
+	 End loop;
+      end if;	 
+ -- Bresenham's line algorithm     
+      if X3<X1 then 
+	 Tempx := X3;
+	 Tempy := Y3;
+	 X3 := X1;
+	 Y3 := Y1;
+	 X1 := Tempx;
+	 Y1 :=Tempy;
+      end if;
+      Dx := Float(X3 - X1);
+      Dy := Float(Y3 - Y1);
+      Error := 0.0;
+      Delt := abs(Dx/Dy);
+      Y := Y1;
+      Put( "Avant : ");Put( X1 ); Put( " " );Put( Y1 ); Put( "   " ); Put( X3 ); Put( "   " ); Put( " " ); Put_line( " " );-- Put( Error );
+      for I in X1..X3 loop
+	 Image(Y,I):=0;
+	 Error := Error+Delt;
+	 Put( I ); Put( " " );Put( Y ); Put_line( " " );-- Put( Error );
+	 while Error >= 0.5 loop
+	     Put( I ); Put( " " );Put( Y ); Put_Line( " " ); --Put( Error );
+	    
+	    Image(Y,I):=0;
+	    Y:= Y - 1;
+	    Error := Error - 1.0; 
+	 end loop;
+      end loop;
+      
+      
+      
+	       
+      
+      if ( False ) then
 	 --on cherche l'équation de la droite AC
 	 P:=((Y3-Y1)/(X3-X1));
 	 D:=(Y1 - P*X1);
@@ -288,8 +339,8 @@ begin
     New_Line;
     Put("1");
     New_Line; 
-    for i in 0..n loop
-       for j in 0..m loop
+    for i in 0..n-1 loop
+       for j in 0..m-1 loop
 	  Put(image(i,j));
        end loop;
        Put_Line("");
@@ -299,5 +350,3 @@ begin
     
     
 end synthese;
-
-
