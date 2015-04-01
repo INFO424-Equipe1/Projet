@@ -64,7 +64,7 @@ public class Analyseur_Image {
 
 	    // caracteres va stocker le codage de l'image 
 	    String[][] caracteres =
-		new String[Integer.parseInt(dimension[1])][Integer.parseInt(dimension[0])];    
+		new String[Integer.parseInt(dimension[0])][Integer.parseInt(dimension[1])];    
 
 	    // fin devient true quand on a terminé
 	    boolean fin = true;
