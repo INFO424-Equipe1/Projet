@@ -59,12 +59,11 @@ procedure synthese is
 	 X3 := X1;
 	 Y3 := Y1;
 	 X1 := Tempx;
-	 Y1 :=Tempy;
+	 Y1 := Tempy;
       end if;
       end if;
-      
-       
-      if X1>X2 then	
+          
+      if X1>=X2 then	
 	 for I in X2..X1 loop
 	    Image(Y1,I):=0;
 	 End loop;
@@ -74,7 +73,7 @@ procedure synthese is
 	 End loop;
       end if;	 
  -- Bresenham's line algorithm     
-      if X3<X1 then 
+      if X3<=X1 then 
 	 Tempx := X3;
 	 Tempy := Y3;
 	 X3 := X1;
@@ -87,13 +86,13 @@ procedure synthese is
       Error := 0.0;
       Delt := abs(Dx/Dy);
       Y := Y1;
-      Put( "Avant : ");Put( X1 ); Put( " " );Put( Y1 ); Put( "   " ); Put( X3 ); Put( "   " ); Put( " " ); Put_line( " " );-- Put( Error );
+      -- test si erreur: Put( "Avant : ");Put( X1 ); Put( " " );Put( Y1 ); Put( "   " ); Put( X3 ); Put( "   " ); Put( " " ); Put_line( " " );-- Put( Error );
       for I in X1..X3 loop
 	 Image(Y,I):=0;
 	 Error := Error+Delt;
-	 Put( I ); Put( " " );Put( Y ); Put_line( " " );-- Put( Error );
+	 -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_line( " " );-- Put( Error );
 	 while Error >= 0.5 loop
-	     Put( I ); Put( " " );Put( Y ); Put_Line( " " ); --Put( Error );
+	     -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_Line( " " ); --Put( Error );
 	    
 	    Image(Y,I):=0;
 	    Y:= Y - 1;
@@ -101,17 +100,40 @@ procedure synthese is
 	 end loop;
       end loop;
       
+       if X3<=X2 then 
+	 Tempx := X3;
+	 Tempy := Y3;
+	 X3 := X2;
+	 Y3 := Y2;
+	 X2 := Tempx;
+	 Y2 :=Tempy;
+      end if;
+      Dx := Float(X3 - X2);
+      Dy := Float(Y3 - Y2);
+      Error := 0.0;
+      Delt := abs(Dx/Dy);
+      Y := Y2;
+     -- test si erreur: Put( "Avant : ");Put( X1 ); Put( " " );Put( Y1 ); Put( "   " ); Put( X3 ); Put( "   " ); Put( " " ); Put_line( " " );-- Put( Error );
+      for I in X2..X3 loop
+	 Image(Y,I):=0;
+	 Error := Error+Delt;
+	 -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_line( " " );-- Put( Error );
+	 while Error >= 0.5 loop
+	     -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_Line( " " ); --Put( Error );
+	    
+	    Image(Y,I):=0;
+	    Y:= Y - 1;
+	    Error := Error - 1.0; 
+	 end loop;
+      end loop;
       
-      
-	       
-      
-      if ( False ) then
+       if ( False ) then
 	 --on cherche l'équation de la droite AC
 	 P:=((Y3-Y1)/(X3-X1));
 	 D:=(Y1 - P*X1);
 	 --Si Ax<Cx on trace une droite AC en incrémentant de A à C
 	 if X1<X3 then
-	    
+	   
 	    for I in (X1+1)..X3 loop
 	       Image(I,abs(P*I + D)):=0;
 	    End loop;
@@ -221,6 +243,7 @@ procedure synthese is
 	  end loop;
        end loop;
        
+      
         
    end Dessin_Triangle;
    
@@ -319,7 +342,7 @@ begin
       -- Get(Cx);Skip_Line;
       -- Get(Cy);Skip_Line;
        
-       Dessin_Triangle(Ax,Ay,Bx,By,Cx,Cy);
+       Dessin_Triangle(AX,AY,BX,BY,CX,CY);
        	
     
        
