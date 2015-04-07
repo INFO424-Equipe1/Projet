@@ -72,7 +72,9 @@ public class Matrice {
         if (this.nuances == 1) {
 	    // Si on a une image seulement avec du noir et du blanc
 	    
-
+	    /* 
+	     *  Variables
+	     */ 
 	    
 	    int h = 0; // Compteur de la largeur de la figure sur une colonne
 	    int h_max = 0; // Valeur maximale de la largeur de la figure
@@ -98,18 +100,25 @@ public class Matrice {
 	    // ypixel sert à dire si on a commencé à parcourir la figure
 	    boolean ypixel = false;
 
-	    // sup sert à savoir si on avait un moment donné h>h_max (élimine le rectangle)
+	    // sup sert à savoir si on avait à un moment donné h>h_max (élimine le rectangle)
 	    boolean sup = false;
 	    
+	    // onaBase sert à différencier le triangle et le cercle. Si on a une base, 
+	    // on a un triangle
 	    boolean onaBase = false;
-	    
-	    // On parcourt notre image
-	    
-	    for (int j=0; j<this.largeur ; j++) {
-		
-		for (int i=0; i<this.hauteur ; i++) {
-		    
 
+	    // ysommet sert pour trouver le sommet supérieur du triangle
+	    boolean ysommet = false;
+	   
+
+	    /*
+	     *  Parcours de l'image
+	     */ 
+	    
+	    // On parcourt en colonnes ( j -> colonnes, i -> lignes)
+	    // pour faciliter l'analyse
+	    for (int j=0; j<this.largeur ; j++) {
+		for (int i=0; i<this.hauteur ; i++) {
 		    
 		    if (this.image[i][j] == 0) {
 			// Si on a un pixel noir
@@ -118,25 +127,22 @@ public class Matrice {
 			if (x1==0 && y1==0) {
 			    // on regarde le premier point de la figure
 			    x1 = j;
-			    y1 = i;
-			    if (this.image[i+1][j+1] == 0 && onaBase) {
-				onaBase = true;
-			    }
-			    else{
-				onaBase=false;
-			    }
+			    y1 = i;   
 			}
-			if (this.image[i][j+1] == 1) {
+			if (this.image[y1][x1+1]==0 && this.image[y1+1][x1+1]==1) {
+			    // On regarde (pour le triangle) si le point suivant sur la ligne
+			    // correspond à la continuité de la base de la figure
+			    onaBase =true;
+			}
 			    
-			    x3 = j;
-			    y3 = i;
-			}
 			if (this.image[i+1][j] == 1){
 			    // Si on arrive à la fin de la figure
 			    // sur la colonne courante
 			    // on incrémente la largeur de cette figure
 			    l++;
+			    
 			}
+
 			if (h == 1 && this.image[i+1][j] == 1) {
 			    // Si on arrive à la fin d'une colonne et qu'on avait qu'un pixel de couleur
 			    // cela signifie qu'on a trouvé le dernier point de la figure
@@ -146,16 +152,32 @@ public class Matrice {
 			    y2 = i;
 			}
 			
+			
 		    }
 		    
 		    
 		    
 		}
-		if (h == h_max && ypixel && ! sup && ! estTriangle) {
+
+		if (h == h_max && ! sup && ! estTriangle && ypixel) {
 		    // Si on a deux colonnes de même longueur qui se suivent
 		    // on a un rectangle
 		    estRectangle = true;
-		    		}
+		}
+		
+		if (sup && h < h_max && ! estRectangle && onaBase) {
+		    // Si la hauteur courante est inférieur à la hauteur max
+		    // on a un triangle
+		    estTriangle = true;
+		   
+		}
+
+		if (h<h_max && sup && ! ysommet) {
+		    // On cherche le sommet supérieur du triangle
+		    x3 = j-1;
+		    y3 = y1-h_max+1;
+		    ysommet = true;
+		}
 		if (h > h_max) {
 		    // On met à jour la hauteur maximale
 		    h_max = h ;
@@ -163,11 +185,9 @@ public class Matrice {
 			sup = true;
 		    }
 		}
-		if (sup && h < h_max && ! estRectangle && onaBase) {
-		    // Si la hauteur courante est inférieur à la hauteur max
-		    // on a un triangle
-		    estTriangle = true;
-		}
+	       
+	 
+		
 		
 		
     		// On arrive à une nouvelle colonne
@@ -189,6 +209,7 @@ public class Matrice {
 		System.out.println("Largeur : "+l);
 		System.out.println("Hauteur : "+h_max);
 	    }
+
 	    else{
 
 		if (estTriangle) {
@@ -198,9 +219,10 @@ public class Matrice {
 		    System.out.println("Sommet 2 : ("+x2+","+y2+")");
 		    System.out.println("Sommet 3 : ("+x3+","+y3+")");
 		    System.out.println("Couleur : Noir");
-		    System.out.println("Longueur de la base : "+h_max);
-		    System.out.println("Hauteur : "+l);
+		    System.out.println("Longueur de la base : "+l);
+		    System.out.println("Hauteur : "+h_max);
 		}
+
 		else{
 		    // Si on a un cercle
 		    System.out.println("La figure est un cercle");
