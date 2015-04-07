@@ -11,7 +11,7 @@ Use Ada.Command_Line;
 procedure synthese is
 	
 	
-   n,m,X,Y,Ax,Ay,Bx,By,Cx,Cy,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K:Integer;
+  C,n,m,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K:Integer;
  
    NomT: String(1..8);
    NomC: String(1..6);
@@ -62,16 +62,17 @@ procedure synthese is
 	 Y1 := Tempy;
       end if;
       end if;
-          
+          -- En arrivant à cette étape on a donc Y1=Y2
       if X1>=X2 then	
-	 for I in X2..X1 loop
+	 for I in X2..X1-1 loop
 	    Image(Y1,I):=0;
 	 End loop;
       else
-	 for I in X1..X2 loop  
+	 for I in X1..X2-1 loop  
 	    Image(Y1,I):=0;
 	 End loop;
-      end if;	 
+      end if;
+      
  -- Bresenham's line algorithm     
       if X3<=X1 then 
 	 Tempx := X3;
@@ -84,19 +85,24 @@ procedure synthese is
       Dx := Float(X3 - X1);
       Dy := Float(Y3 - Y1);
       Error := 0.0;
-      Delt := abs(Dx/Dy);
+      Delt := abs(Dy/Dx);
       Y := Y1;
-      -- test si erreur: Put( "Avant : ");Put( X1 ); Put( " " );Put( Y1 ); Put( "   " ); Put( X3 ); Put( "   " ); Put( " " ); Put_line( " " );-- Put( Error );
-      for I in X1..X3 loop
+  
+      for I in X1..X3-1 loop
 	 Image(Y,I):=0;
 	 Error := Error+Delt;
-	 -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_line( " " );-- Put( Error );
 	 while Error >= 0.5 loop
-	     -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_Line( " " ); --Put( Error );
 	    
-	    Image(Y,I):=0;
-	    Y:= Y - 1;
+	    
+
+	    if Dy > 0.0 then 
+	       Y:=Y+1;
+	    else
+	       Y:= Y - 1;
+	       
+	    end if;
 	    Error := Error - 1.0; 
+	    Image(Y,I):=0;
 	 end loop;
       end loop;
       
@@ -111,22 +117,73 @@ procedure synthese is
       Dx := Float(X3 - X2);
       Dy := Float(Y3 - Y2);
       Error := 0.0;
-      Delt := abs(Dx/Dy);
+      Delt := abs(Dy/Dx);
       Y := Y2;
-     -- test si erreur: Put( "Avant : ");Put( X1 ); Put( " " );Put( Y1 ); Put( "   " ); Put( X3 ); Put( "   " ); Put( " " ); Put_line( " " );-- Put( Error );
-      for I in X2..X3 loop
+  
+      for I in X2..X3-1 loop
 	 Image(Y,I):=0;
+ 
 	 Error := Error+Delt;
-	 -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_line( " " );-- Put( Error );
+
 	 while Error >= 0.5 loop
-	     -- test si erreur: Put( I ); Put( " " );Put( Y ); Put_Line( " " ); --Put( Error );
-	    
-	    Image(Y,I):=0;
-	    Y:= Y - 1;
+	   
+	    if Dy > 0.0 then 
+	       Y:=Y+1;
+	    else
+	       Y:= Y - 1;
+	       
+	    end if; 
 	    Error := Error - 1.0; 
+	    Image(Y,I):=0;
+	    
 	 end loop;
       end loop;
       
+------------------------------------- Remplissage du triangle------------------------------------------------------
+      
+      
+      Minx := Integer'Min(Integer'Min (AX,BX),Integer'Min (BX,CY));
+      Maxx := Integer'Max(Integer'Max (AX,BX),Integer'Max (BX,CX));
+      Miny := Integer'Min(Integer'Min (Ay,BY),Integer'Min (BY,Cy));
+      Maxy := Integer'Max(Integer'Max (Ay,BY),Integer'Max (BY,Cy));
+ 
+      for J in Miny+1..Maxy-1 loop
+	 --Maxx:=Maxx-1;
+	 C:=0;
+	 for I in Minx..Maxx loop
+	    
+	    if Image(J,I)=0 then
+	       C:=C+1;
+	    end if;
+	    
+	    if C=1 then
+	       Yx:=I;  
+	    end if;  
+	    
+	    
+	    if C=2 then
+	       Zx:=I;
+	      
+		
+	       for U in Yx..Zx loop
+		 
+		  
+		  Image(J,U):=0; 
+	       end loop;
+	       
+	    end if;
+	     
+	    
+	 end loop;     
+      end loop;
+      
+      
+      
+     
+     
+      
+       
+----------------------------------------------------------------------------------------------------------------      
        if ( False ) then
 	 --on cherche l'équation de la droite AC
 	 P:=((Y3-Y1)/(X3-X1));
@@ -158,7 +215,7 @@ procedure synthese is
 	       Image(I,abs((P*I + D))):=0;
 	    End loop;
 	 end if;
-       end if ; 
+
        
 	 
 	   
@@ -225,23 +282,13 @@ procedure synthese is
 		Image(I,abs((P*I + D))):=0;
 	     End loop;
 	  end if;
-       end if; 	
+       end if; 
+       end if;
        
-       -- Remplissage du triangle
-       Minx := Integer'Min(Integer'Min (AX,BX),Integer'Min (BX,CY));
-       Maxx := Integer'Max(Integer'Max (AX,BX),Integer'Max (BX,CX));
-       Miny := Integer'Min(Integer'Min (Ay,BY),Integer'Min (BY,Cy));
-       Maxy := Integer'Max(Integer'Max (Ay,BY),Integer'Max (BY,Cy));
-       for J in Miny..Maxy-1 loop
-	  Maxx:=Maxx-1;
-	  for I in Minx..Maxx loop
-      	     if Image(I,J)=0 then
-		if Image(I+1,J)=1 then
-		   Image(I+1,J):=0;
-		end if;
-	      end if;
-	  end loop;
-       end loop;
+       
+
+       
+
        
       
         
@@ -361,10 +408,12 @@ begin
     Put(n);Put(m);
     New_Line;
     Put("1");
-    New_Line; 
+    New_Line;
+
     for i in 0..n-1 loop
        for j in 0..m-1 loop
 	  Put(image(i,j));
+
        end loop;
        Put_Line("");
     end loop;
