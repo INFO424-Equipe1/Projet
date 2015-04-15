@@ -64,14 +64,17 @@ procedure synthese is
       end if;
           -- En arrivant à cette étape on a donc Y1=Y2
       if X1>=X2 then	
-	 for I in X2..X1-1 loop
-	    Image(Y1,I):=0;
-	 End loop;
-      else
-	 for I in X1..X2-1 loop  
-	    Image(Y1,I):=0;
-	 End loop;
+	 Tempx :=X1;
+	 X1:=X2;
+	 X2:=Tempx;
+	 Tempy:=Y1;
+	 Y1:=Y2;
+	 Y2:=Tempy;
       end if;
+      for I in X1..X2-1 loop  	 
+	 Image(Y1,I):=0;
+      End loop;
+      
       
  -- Bresenham's line algorithm     
       if X3<=X1 then 
@@ -87,26 +90,22 @@ procedure synthese is
       Error := 0.0;
       Delt := abs(Dy/Dx);
       Y := Y1;
-  
       for I in X1..X3-1 loop
 	 Image(Y,I):=0;
 	 Error := Error+Delt;
 	 while Error >= 0.5 loop
-	    
-	    
-
 	    if Dy > 0.0 then 
 	       Y:=Y+1;
 	    else
-	       Y:= Y - 1;
-	       
+	       Y:= Y - 1; 
 	    end if;
 	    Error := Error - 1.0; 
 	    Image(Y,I):=0;
 	 end loop;
       end loop;
       
-       if X3<=X2 then 
+      
+      if X3<=X2 then 
 	 Tempx := X3;
 	 Tempy := Y3;
 	 X3 := X2;
@@ -119,177 +118,47 @@ procedure synthese is
       Error := 0.0;
       Delt := abs(Dy/Dx);
       Y := Y2;
-  
       for I in X2..X3-1 loop
 	 Image(Y,I):=0;
- 
 	 Error := Error+Delt;
-
 	 while Error >= 0.5 loop
-	   
 	    if Dy > 0.0 then 
 	       Y:=Y+1;
 	    else
-	       Y:= Y - 1;
-	       
-	    end if; 
-	    Error := Error - 1.0; 
+	       Y:= Y-1; 
+	    end if;
+	    Error := Error-1.0; 
 	    Image(Y,I):=0;
-	    
 	 end loop;
       end loop;
       
+  
+      
+      
 ------------------------------------- Remplissage du triangle------------------------------------------------------
       
-      
-      Minx := Integer'Min(Integer'Min (AX,BX),Integer'Min (BX,CY));
-      Maxx := Integer'Max(Integer'Max (AX,BX),Integer'Max (BX,CX));
-      Miny := Integer'Min(Integer'Min (Ay,BY),Integer'Min (BY,Cy));
-      Maxy := Integer'Max(Integer'Max (Ay,BY),Integer'Max (BY,Cy));
- 
-      for J in Miny+1..Maxy-1 loop
-	 --Maxx:=Maxx-1;
+	 
+      Minx := Integer'Min(Integer'Min (AX,BX),CX);
+      Maxx := Integer'Max(Integer'Max (AX,BX),CX);
+      Miny := Integer'Min(Integer'Min (AY,BY),CY);
+      Maxy := Integer'Max(Integer'Max (AY,BY),CY);
+      for J in Miny-1..Maxy+1 loop	    
 	 C:=0;
 	 for I in Minx..Maxx loop
-	    
 	    if Image(J,I)=0 then
-	       C:=C+1;
+	       C:=C+1;  
+	    end if;   
+	    if C=1 then	  
+	       Yx:=I;	  
 	    end if;
-	    
-	    if C=1 then
-	       Yx:=I;  
-	    end if;  
-	    
-	    
-	    if C=2 then
-	       Zx:=I;
-	      
-		
+	    if C=2 then  
+	       Zx:=I;  
 	       for U in Yx..Zx loop
-		 
-		  
-		  Image(J,U):=0; 
-	       end loop;
-	       
-	    end if;
-	     
-	    
-	 end loop;     
+		  Image(J,U):=0;   
+	       end loop;   
+	    end if;   
+	 end loop; 	    
       end loop;
-      
-      
-      
-     
-     
-      
-       
-----------------------------------------------------------------------------------------------------------------      
-       if ( False ) then
-	 --on cherche l'équation de la droite AC
-	 P:=((Y3-Y1)/(X3-X1));
-	 D:=(Y1 - P*X1);
-	 --Si Ax<Cx on trace une droite AC en incrémentant de A à C
-	 if X1<X3 then
-	   
-	    for I in (X1+1)..X3 loop
-	       Image(I,abs(P*I + D)):=0;
-	    End loop;
-	    --si Ax>Cx on trace une droite en incrémentant de C à A
-	 else   
-	     for I in (X3+1)..X1 loop 
-	       Image(I,abs((P*I + D))):=0;
-	     End loop;
-	 end if;
-	 
-	 -- on cherche l'équation de la droite BC
-	 P:=((Y3-Y2)/(X3-X2));
-	 D:=(Y2 - P*X2);
-	 --Si Bx<Cx on trace une droite BC en incrémentant de B à C
-	 if X2<X3 then 
-	    for I in (X2+1)..X3 loop 
-	       Image(I,abs((P*I + D))):=0;
-	    End loop;
-	     --si Bx>Cx on trace une droite en incrémentant de C à B
-	 else
-	    for I in (X3+1)..X2 loop 
-	       Image(I,abs((P*I + D))):=0;
-	    End loop;
-	 end if;
-
-       
-	 
-	   
-       if y1=y3 then
-	 for I in X1..X3 loop
-	    Image(I,Y1):=0;
-	 End loop;
-	 
-	 P:=((Y2-Y1)/(X2-X1));
-	 D:=Y1 - P*X1;
-	 if X1<X2 then
-	    
-	    for I in (X1+1)..X2 loop
-	       Image(I,abs((P*I + D))):=0; 
-	    End loop;
-	 else
-	    for I in (X2+1)..X1 loop
-	       Image(I,abs((P*I + D))):=0; 
-	    End loop;
-	 end if;
-	   
-	 
-	 P:=((Y2-Y3)/(X2-X3));
-	 D:=Y3 - P*X3;
-	 if X3<X2 then
-	   for I in (X3+1)..X2 loop 
-	   Image(I,abs((P*I + D))):=0;
-	   End loop;
-	 else
-	    for I in (X2+1)..X3 loop
-	   Image(I,abs((P*I + D))):=0;
-	   End loop;
-	 end if;
-       end if ; 
-       
-	 
-	 
-       if y2=y3 then
-	 for I in X2..X3 loop
-	    Image(I,Y2):=0;
-	 End loop;
-	 
-	  P:=((Y1-Y2)/(X1-X2));
-	  D:=Y2 - P*X2;
-	  if X2<X1 then
-	     for I in (X2+1)..X1 loop 
-		Image(I,abs((P*I + D))):=0;
-	     End loop;
-	  else    
-	     for I in X1+1..X2 loop
-		 Image(i,abs((P*I + D))):=0;
-	     End loop;
-	  end if;
-	  
-	 
-	  P:=((Y1-Y3)/(X1-X3));
-	  D:=Y3 - P*X3;
-	  if X1<X3 then
-	     for I in (X1+1)..X3 loop
-		 Image(I,abs((P*I + D))):=0;
-	     End loop;
-	  else
-	     for I in (X3+1)..X1 loop --
-		Image(I,abs((P*I + D))):=0;
-	     End loop;
-	  end if;
-       end if; 
-       end if;
-       
-       
-
-       
-
-       
       
         
    end Dessin_Triangle;
@@ -315,12 +184,21 @@ begin
  --  New_Line;
    
    K:=1;
+   if Argument_Count = 0 then 
+      N:=300;
+      M:=200;
+      NomC:="Cercle";
+      X:=60;
+      Y:=60;
+      Rayon:=30;
+   end if;
+   
    while K< Argument_Count loop
       if Argument(K) = "--taille" then 
 	 N:= Integer'Value(Argument(K+1));
 	 M:= Integer'Value(Argument(K+2));
       elsif Argument(K)="--Cercle" then 
-	 NomC:= ("Cercle");
+	 NomC:= "Cercle";
 	 X:= Integer'Value(Argument(K+1));
 	 Y:= Integer'Value(Argument(K+2));
 	 Rayon:= Integer'Value(Argument(K+3));
