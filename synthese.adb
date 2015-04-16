@@ -11,7 +11,7 @@ Use Ada.Command_Line;
 procedure synthese is
 	
 	
-  C,n,m,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K:Integer;
+  C,n,m,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B:Integer;
  
    NomT: String(1..8);
    NomC: String(1..6);
@@ -21,24 +21,34 @@ procedure synthese is
    type Forme is (Rectangle, Triangle ,Cercle);
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
+   
+   type Pixel is record 
+      Rouge : Integer;
+      Vert : Integer ; 
+      Bleu : Integer ;
+   end record ; 
+        
+
 	
-   type Matrice is array(0..1000,0..1000) of integer;
-   image : matrice;
+   type Matrice is array(0..1000,0..1000) of Pixel;
+   image : Matrice;
 	
-   procedure Dessin_Rectangle(x1,y1,longrec,Largrec:in Integer) is 
+   procedure Dessin_Rectangle(x1,y1,longrec,Largrec,R,V,B:in Integer) is 
    begin
       
    	for i in x1..(x1+Longrec) loop
-   		for j in y1..y1+largrec loop
-   			image(i,j):=0;
-   		end loop;
+	   for j in y1..y1+largrec loop
+	       image(i,j).Rouge:=R;
+	       image(i,j).Vert:=V;
+	       image(i,j).Bleu:=B; 
+	   end loop;
    	end loop;
    end Dessin_Rectangle;
    
       
       
-   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3: in out Integer) is
-      P,D,Tempx,Tempy,Y:Integer ;
+   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3,R,V,B: in out Integer) is
+      Tempx,Tempy,Y:Integer ;
       Delt,Error,Dx,Dy : Float;
 
 	 
@@ -72,7 +82,9 @@ procedure synthese is
 	 Y2:=Tempy;
       end if;
       for I in X1..X2-1 loop  	 
-	 Image(Y1,I):=0;
+	  image(Y1,I).Rouge:=R;
+	  image(Y1,I).Vert:=V;
+	  image(Y1,I).Bleu:=B;
       End loop;
       
       
@@ -91,7 +103,9 @@ procedure synthese is
       Delt := abs(Dy/Dx);
       Y := Y1;
       for I in X1..X3-1 loop
-	 Image(Y,I):=0;
+	 image(Y,I).Rouge:=R;
+	 image(Y,I).Vert:=V;
+	 image(Y,I).Bleu:=B;
 	 Error := Error+Delt;
 	 while Error >= 0.5 loop
 	    if Dy > 0.0 then 
@@ -100,7 +114,9 @@ procedure synthese is
 	       Y:= Y - 1; 
 	    end if;
 	    Error := Error - 1.0; 
-	    Image(Y,I):=0;
+	    image(Y,i).Rouge:=R;
+	    image(Y,i).Vert:=V;
+	    image(Y,i).Bleu:=B;
 	 end loop;
       end loop;
       
@@ -119,7 +135,9 @@ procedure synthese is
       Delt := abs(Dy/Dx);
       Y := Y2;
       for I in X2..X3-1 loop
-	 Image(Y,I):=0;
+         image(Y,I).Rouge:=R;
+	 image(Y,I).Vert:=V;
+	 image(Y,I).Bleu:=B;
 	 Error := Error+Delt;
 	 while Error >= 0.5 loop
 	    if Dy > 0.0 then 
@@ -128,7 +146,9 @@ procedure synthese is
 	       Y:= Y-1; 
 	    end if;
 	    Error := Error-1.0; 
-	    Image(Y,I):=0;
+	    image(Y,I).Rouge:=R;
+	    image(Y,I).Vert:=V;
+	    image(Y,I).Bleu:=B;
 	 end loop;
       end loop;
       
@@ -145,7 +165,8 @@ procedure synthese is
       for J in Miny-1..Maxy+1 loop	    
 	 C:=0;
 	 for I in Minx..Maxx loop
-	    if Image(J,I)=0 then
+	    if image(J,I).Rouge/=255 and image(J,I).Vert/=255 and image(J,I).Bleu/=255 then
+	       --n'importe quelles couleurs sauf blanc 
 	       C:=C+1;  
 	    end if;   
 	    if C=1 then	  
@@ -154,7 +175,9 @@ procedure synthese is
 	    if C=2 then  
 	       Zx:=I;  
 	       for U in Yx..Zx loop
-		  Image(J,U):=0;   
+		  image(J,U).Rouge:=R;
+		  image(J,U).Vert:=V;
+		  image(J,U).Bleu:=B;   
 	       end loop;   
 	    end if;   
 	 end loop; 	    
@@ -163,12 +186,14 @@ procedure synthese is
         
    end Dessin_Triangle;
    
-   procedure Dessin_Cercle (X,Y,Rayon: in integer) is 
+   procedure Dessin_Cercle (X,Y,Rayon,R,V,B: in integer) is 
    begin 
-      for I in 0..N loop
-	 for J in 0..M loop
+      for I in 0..N-1 loop
+	 for J in 0..M-1 loop
 	    if (I-X)**2+(J-Y)**2<= Rayon**2 then 
-	       Image(I,J):=0;
+	       image(J,I).Rouge:=R;
+	       image(J,I).Vert:=V;
+	       image(J,I).Bleu:=B;
 	    end if; 
 	 end loop;
       end loop;
@@ -183,6 +208,7 @@ begin
  --  end loop;
  --  New_Line;
    
+ -- Valeur par défault de l'image : taille 200*300, forme cercle de centre (60,60), de rayon 30 et de couleur Bleu 
    K:=1;
    if Argument_Count = 0 then 
       N:=300;
@@ -191,6 +217,9 @@ begin
       X:=60;
       Y:=60;
       Rayon:=30;
+      R:=0;
+      V:=0;
+      B:=255;
    end if;
    
    while K< Argument_Count loop
@@ -216,20 +245,38 @@ begin
 	 BY:= Integer'Value(Argument(K+4));
 	 CX:= Integer'Value(Argument(K+5));
 	 CY:= Integer'Value(Argument(K+6));
+      elsif Argument(K)="--Rouge" then 
+	 R:=255;
+	 V:=0;
+	 B:=0;
+      elsif Argument(K)="--Vert" then 
+	 R:=0;
+	 V:=255;
+	 B:=0;
+      elsif Argument(K)="--Bleu" then 
+	 R:=0;
+	 V:=0;
+	 B:=255;
+      elsif Argument(K)="--Jaune" then 
+	 R:=255;
+	 V:=255;
+	 B:=0;
+      elsif Argument(K)="--Noir" then 
+	 R:=0;
+	 V:=0;
+	 B:=0;
       end if;
      K:=K+1;
    end loop;
    
 	 
 	 
-	 
-	 
-	
   
-  
-    for i in 0..n loop
-    	for j in 0..m loop
-    		image(i,j):=1;
+    for i in 0..N-1 loop
+    	for j in 0..M-1 loop
+	   image(j,i).Rouge:=255;
+	   image(J,I).Vert:=255;
+	   Image(J,I).Bleu:=255;
     	end loop;
     end loop;
     
@@ -248,7 +295,7 @@ begin
     --	Put_line("Donner la longeur et la largeur");
 	--get (Longeur) ;
 	--get (Largeur);
-	Dessin_Rectangle (X,Y,longeur, Largeur);
+	Dessin_Rectangle (X,Y,longeur, Largeur,R,V,B);
 	
 	
     elsif NomT = "Triangle" then
@@ -267,7 +314,7 @@ begin
       -- Get(Cx);Skip_Line;
       -- Get(Cy);Skip_Line;
        
-       Dessin_Triangle(AX,AY,BX,BY,CX,CY);
+       Dessin_Triangle(AX,AY,BX,BY,CX,CY,R,V,B);
        	
     
        
@@ -279,10 +326,11 @@ begin
     --   Get (X);Skip_Line;
     --   Get (Y);Skip_Line;
       
-      Dessin_Cercle (X,Y,Rayon);
+      Dessin_Cercle (X,Y,Rayon,R,V,B);
            
     end if;
-    Put_Line("P2");
+    
+    Put_Line("P6");
     Put(n);Put(m);
     New_Line;
     Put("1");
@@ -290,9 +338,10 @@ begin
 
     for i in 0..n-1 loop
        for j in 0..m-1 loop
-	  Put(image(i,j));
-
-       end loop;
+	  Put((image(J,i).Rouge));
+	  Put((image(J,i).Vert));
+	  Put((image(J,i).Bleu));
+	  end loop;
        Put_Line("");
     end loop;
     
