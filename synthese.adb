@@ -48,8 +48,9 @@ procedure synthese is
       
       
    procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3,R,V,B: in out Integer) is
-      Tempx,Tempy,Y:Integer ;
+      Tempx,Tempy,Y,A:Integer ;
       Delt,Error,Dx,Dy : Float;
+      
 
 	 
    begin
@@ -81,7 +82,7 @@ procedure synthese is
 	 Y1:=Y2;
 	 Y2:=Tempy;
       end if;
-      for I in X1..X2-1 loop  	 
+      for I in X1-1..X2 loop  	 
 	  image(Y1,I).Rouge:=R;
 	  image(Y1,I).Vert:=V;
 	  image(Y1,I).Bleu:=B;
@@ -164,23 +165,33 @@ procedure synthese is
       Maxy := Integer'Max(Integer'Max (AY,BY),CY);
       for J in Miny-1..Maxy+1 loop	    
 	 C:=0;
+	 A:=0;
 	 for I in Minx..Maxx loop
-	    if image(J,I).Rouge/=255 and image(J,I).Vert/=255 and image(J,I).Bleu/=255 then
+	    if image(J,I).Rouge/=255 or image(J,I).Vert/=255 or image(J,I).Bleu/=255 then
 	       --n'importe quelles couleurs sauf blanc 
-	       C:=C+1;  
+	       C:=C+1;
 	    end if;   
-	    if C=1 then	  
+	    if C=1 and A=0 then	  
 	       Yx:=I;	  
 	    end if;
 	    if C=2 then  
 	       Zx:=I;  
-	       for U in Yx..Zx loop
-		  image(J,U).Rouge:=R;
-		  image(J,U).Vert:=V;
-		  image(J,U).Bleu:=B;   
-	       end loop;   
-	    end if;   
-	 end loop; 	    
+	       if Zx=Yx+1 then
+		  Yx:=Zx;
+		  C:=1;
+		  A:=1;
+	       else		  
+		  for U in Yx..Zx loop
+   		     image(J,U).Rouge:=R;		     
+		     image(J,U).Vert:=V;		     			
+		     image(J,U).Bleu:=B;		     
+		  end loop;		  
+	       end if;	       
+	    end if;
+	    --   Put(C);
+	  --  Put(Yx);Put(Zx);
+	 --   New_Line;
+	 end loop;
       end loop;
       
         
