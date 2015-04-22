@@ -63,46 +63,92 @@ public class Analyseur_Image {
 	    
 
 	    // caracteres va stocker le codage de l'image 
-	    String[][] caracteres =
-		new String[Integer.parseInt(dimension[0])][Integer.parseInt(dimension[1])];    
+	    String[][] caracteres = null;
+	    if (format_img.equals("P2")) {
+		    caracteres =
+			new String[Integer.parseInt(dimension[0])][Integer.parseInt(dimension[1])];    
 
-	    // fin devient true quand on a terminé
-	    boolean fin = true;
+		    // fin devient true quand on a terminé
+		    boolean fin = true;
 	    
 	   
-	    int h =0;
-	    while ( fin && h < Integer.parseInt(dimension[1]) ) {
-		try {
-		    int l = 0;
+		    int h =0;
+		    while ( fin && h < Integer.parseInt(dimension[1]) ) {
+			try {
+			    int l = 0;
 		    
-		    ligneCourante = br.readLine();
-		    if ( ligneCourante != null ) {
-			ligneCourante.replaceAll( "\\s+", " ");
-			for ( String c : ligneCourante.split( " " ) ) {
-			    if (c.length() > 0) {
-				caracteres[l][h] = c;
-				l++;
+			    ligneCourante = br.readLine();
+			    if ( ligneCourante != null ) {
+				ligneCourante.replaceAll( "\\s+", " ");
+				for ( String c : ligneCourante.split( " " ) ) {
+				    if (c.length() > 0) {
+					caracteres[l][h] = c;
+					l++;
+				    }
+				}
+		    
+				h++;
+
 			    }
+		
+			    else {
+				fin = false;
+			    }
+			} catch (IOException ioe) {
+			    System.out.println( "Erreur de lecture" );
+			    System.exit(1);
 			}
-		    
-			h++;
+
 
 		    }
-		
-		    else {
-			fin = false;
-		    }
-		} catch (IOException ioe) {
-		    System.out.println( "Erreur de lecture" );
-		    System.exit(1);
 		}
 
+		else { 
+		    if (format_img.equals("P3")) {
+			    
+			    caracteres =
+			    new String[Integer.parseInt(dimension[0])*3][Integer.parseInt(dimension[1])];    
 
-	    }
+			    // fin devient true quand on a terminé
+			    boolean fin = true;
+			    
+			    
+			    int h =0;
+			    while ( fin && h < Integer.parseInt(dimension[1]) ) {
+				try {
+				    int l = 0;
+				    
+				    ligneCourante = br.readLine();
+				    if ( ligneCourante != null ) {
+					ligneCourante.replaceAll( "\\s+", " ");
+					for ( String c : ligneCourante.split( " " ) ) {
+					    if (c.length() > 0) {
+						caracteres[l][h] = c;
+						l++;
+					    }
+					}
+					
+					h++;
+					
+				    }
+				    
+				    else {
+					fin = false;
+				    }
+				} catch (IOException ioe) {
+				    System.out.println( "Erreur de lecture" );
+				    System.exit(1);
+				}
+				
+				
+			    }
+			}
+			}
+
 
 	    // mat va stocker notre image (en transformant les string en int)
 	    Matrice mat = new Matrice( caracteres, dimension[0] , dimension[1]
-					   , nuances_img );
+				       , nuances_img, format_img );
 		
 	    
 	    
@@ -127,7 +173,7 @@ public class Analyseur_Image {
 	    }
 
 	    else {
-		if (format_img.equals("P5")) {
+		if (format_img.equals("P3")) {
      		    // Si l'image est en ppm (couleurs)
 		    //mat.analyse_ppm();
 		    System.out.println("Analyse terminée ");
