@@ -226,8 +226,8 @@ begin
       B:=255;
    end if;
    
-   while K< Argument_Count loop
-      if Argument(K) = "--taille" then 
+   while K <= Argument_Count loop
+      if Argument(K) = "--Taille" then 
 	 N:= Integer'Value(Argument(K+1));
 	 M:= Integer'Value(Argument(K+2));
       elsif Argument(K)="--Cercle" then 
