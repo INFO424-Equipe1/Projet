@@ -23,7 +23,7 @@ public class Matrice {
     }
 
     public Matrice( String[][] caracteres , String largeur_img, String hauteur_img,
-		    String nuances_img, String format_img) {
+		    String nuances_img) {
 	/* Constructeur qui récupère les informations de 
 	 * l'image à traiter pour créer une Matrice associée
 	 * Paramètres : 
@@ -36,13 +36,9 @@ public class Matrice {
 	 */
 
 	/* Integer.parseInt("String") permet de tranformer un String en int */
-	if (format_img.equals("P2")){
-	    this.largeur = Integer.parseInt(largeur_img);
-	}
-	if (format_img.equals("P5")){
-	    this.largeur = Integer.parseInt(largeur_img)*3;
-	}
-	this.hauteur = Integer.parseInt(hauteur_img);
+	
+	this.largeur = Integer.parseInt(largeur_img);
+       	this.hauteur = Integer.parseInt(hauteur_img);
 	this.nuances = Integer.parseInt(nuances_img);
 	this.image = new int[this.hauteur][this.largeur];
 	for (int i=0 ; i<this.hauteur ; i++) {
@@ -243,12 +239,7 @@ public class Matrice {
     
     } 
     
-    public void analyse_ppm () {
-	/* Procedure qui analyse l'image .ppm 
-	 * Affiche les résultats de l'analyse
-	 */ 
-
-    }
+    
 
 
 }
