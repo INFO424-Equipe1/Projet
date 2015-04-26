@@ -11,16 +11,16 @@ Use Ada.Command_Line;
 procedure synthese is
 	
 	
-   C,n,m,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B:Integer;   
- 
-   NomT: String(1..8);
-   NomC: String(1..6);
-   NomR: String(1..9);
-      
+   C,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B:Integer; 
+   N:Integer;
+   M:Integer;
+
+   
 	
    type Forme is (Rectangle, Triangle ,Cercle);
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
+   Nomf:Forme;
    
    type Pixel is record 
       Rouge : Integer;
@@ -30,8 +30,9 @@ procedure synthese is
         
 
 	
-   type Matrice is array(0..100,0..100) of Pixel;
-   image : Matrice;
+   type Matrice is array ( Integer range <> , Integer range <>) of Pixel;
+   image: Matrice(0..N,0..M) ;
+  
 	
    procedure Dessin_Rectangle(x1,y1,longrec,Largrec,R,V,B:in Integer) is 
    begin
@@ -82,7 +83,7 @@ procedure synthese is
 	 Y1:=Y2;
 	 Y2:=Tempy;
       end if;
-      for I in X1-1..X2 loop  	 
+      for I in X1..X2 loop  	 
 	  image(Y1,I).Rouge:=R;
 	  image(Y1,I).Vert:=V;
 	  image(Y1,I).Bleu:=B;
@@ -171,12 +172,12 @@ procedure synthese is
 	       --n'importe quelles couleurs sauf blanc 
 	       C:=C+1;
 	    end if;   
-	    if C=1 and A=0 then	  
+	    if C=1 and A=0 then	  --A est une variable pour vérifier si on rencontre deux pixels adjacents
 	       Yx:=I;	  
 	    end if;
 	    if C=2 then  
 	       Zx:=I;  
-	       if Zx=Yx+1 then
+	       if Zx=Yx+1 then --Si le test est vrai on recommence à chercher à un autre pixel sinon on remplit le triangle 
 		  Yx:=Zx;
 		  C:=1;
 		  A:=1;
@@ -188,9 +189,6 @@ procedure synthese is
 		  end loop;		  
 	       end if;	       
 	    end if;
-	    --   Put(C);
-	  --  Put(Yx);Put(Zx);
-	 --   New_Line;
 	 end loop;
       end loop;
       
@@ -199,12 +197,12 @@ procedure synthese is
    
    procedure Dessin_Cercle (X,Y,Rayon,R,V,B: in integer) is 
    begin 
-      for I in 0..N-1 loop
-	 for J in 0..M-1 loop
-	    if (I-X)**2+(J-Y)**2<= Rayon**2 then 
-	       image(J,I).Rouge:=R;
-	       image(J,I).Vert:=V;
-	       image(J,I).Bleu:=B;
+      for j in 0..m-1 loop
+	 for i in 0..n-1 loop
+	    if (J-X)**2+(I-Y)**2<= Rayon**2 then 
+	       image(j,i).Rouge:=R;
+	       image(j,i).Vert:=V;
+	       image(j,i).Bleu:=B;
 	    end if; 
 	 end loop;
       end loop;
@@ -212,55 +210,45 @@ procedure synthese is
    end Dessin_Cercle;
          
 begin
-   
-   R:=0;
-   V:=0;
-   B:=0;
- 
-  -- Put( "Les arguments sont : ") ;
-  -- for Arg in 1..Argument_Count loop
-  --    Put(Argument(Arg) & ", ");
- --  end loop;
- --  New_Line;
+
     
  -- Valeur par défault de l'image : taille 200*300, forme cercle de centre (60,60), de rayon 30 et de couleur Bleu 
-   K:=1;
-   if Argument_Count = 0 then 
-      N:=300;
-      M:=200;
-      NomC:="Cercle";
-      X:=60;
-      Y:=60;
-      Rayon:=30;
-      R:=0;
-      V:=0;
-      B:=255;
-   end if;
+  
+   N:=200;
+   M:=300;
+   Nomf:=Cercle;
+   X:=60;
+   Y:=60;
+   Rayon:=30;
+   R:=0;
+   V:=0;
+   B:=255;
    
+   K:=1;
    while K <= Argument_Count loop
       if Argument(K) = "--Taille" then 
 	 N:= Integer'Value(Argument(K+1));
 	 M:= Integer'Value(Argument(K+2));
-      elsif Argument(K)="--Cercle" then 
-	 NomC:= "Cercle";
+      elsif Argument(K)="--Cercle" then  
+	 Nomf:= Cercle;
 	 X:= Integer'Value(Argument(K+1));
 	 Y:= Integer'Value(Argument(K+2));
 	 Rayon:= Integer'Value(Argument(K+3));
       elsif Argument(K)="--Rectangle" then
-	 NomR := "Rectangle";
+	 Nomf := Rectangle;
 	 X:= Integer'Value(Argument(K+1));
 	 Y:= Integer'Value(Argument(K+2));
 	 Longeur:= Integer'Value(Argument(K+3));
 	 Largeur:= Integer'Value(Argument(K+4));
       elsif Argument(K)="--Triangle" then
-	 NomT:= "Triangle";
+	 Nomf:= Triangle;
 	 AX:= Integer'Value(Argument(K+1));
 	 AY:= Integer'Value(Argument(K+2));
 	 BX:= Integer'Value(Argument(K+3));
 	 BY:= Integer'Value(Argument(K+4));
 	 CX:= Integer'Value(Argument(K+5));
 	 CY:= Integer'Value(Argument(K+6));
-      elsif Argument(K)="--Rouge" then 
+      elsif Argument(K)="--Rouge" then
 	 R:= 255;
 	 V:=0;
 	 B:=0;
@@ -277,88 +265,56 @@ begin
 	 V:=255;
 	 B:=0;
       end if;
-     K:=K+1;
+      K:=K+1;
    end loop;
-  
-     
-   for i in 0..N-1 loop
-      for j in 0..M-1 loop
-	 image(I,j).Rouge:=255;
-	 image(I,j).Vert:=255;
-	 image(I,j).Bleu:=255;
-      end loop;
-   end loop;
-    
-   -- Put_line("Donner le nom de la figure.");
-  --  Get_Line(nomf, longueur);
-  --  Put( "--" );
-   -- Put( Nomf(1..Longueur) );
-   -- Put( "--" );
-   -- New_Line;
- 
-
-   if NomR = "Rectangle" then
-      
-        --Put_line("Donner le point initial de la figure : ");
-       -- Get(X); Skip_Line;
-        --Get(Y); Skip_Line;
-    --	Put_line("Donner la longeur et la largeur");
-	--get (Longeur) ;
-	--get (Largeur);
-      Dessin_Rectangle (X,Y,longeur, Largeur,R,V,B);
-      
-	
-	
-   elsif NomT = "Triangle" then
-            
-     --  Put_line ("Donner les coordonnées des 3 sommets  "); 
-       --Put_line("coordonnées du point A");
-      -- Get(Ax);Skip_Line;
-      -- Get(Ay);Skip_Line;
-       
-      -- Put_line("Coordonnées Du Point B");
-       --Get(Bx);Skip_Line;
-      -- Get(By);Skip_Line;
-       
-      -- Put_line("coordonnées du poit C");
-      -- Get(Cx);Skip_Line;
-      -- Get(Cy);Skip_Line;
-       
-      Dessin_Triangle(AX,AY,BX,BY,CX,CY,R,V,B);  	
-    
-       
-   elsif NomC = "Cercle" then
-
-    --   Put_Line ("Donner le rayon du cercle");
-    --   Get (Rayon); Skip_Line;
-    --   Put_Line ("Donner le centre du cercle");
-    --   Get (X);Skip_Line;
-    --   Get (Y);Skip_Line;
-      
-      Dessin_Cercle (X,Y,Rayon,R,V,B);
+	 
+   declare 
            
-   end if;
-     
-   Put_Line("P3");
-   Put(n);Put(m);
-   New_Line;
-   Put("255");   
-   New_Line;
-   
-  -- Put(R);Put(V);Put(B);
-   --New_Line;
+      image : Matrice(0..m,0..n);
+   begin
+        
 
-   for i in 0..n-1 loop
       for j in 0..m-1 loop
-	 Put((image(i,j).Rouge));
-	 Put((image(i,j).Vert));
-	 Put((image(i,j).Bleu));
+	 for i in 0..n-1 loop 
+	    image(j,i).Rouge:=255;
+	    image(i,j).Vert:=255;
+	    image(j,i).Bleu:=255;
+	 end loop;
       end loop;
-      Put_Line("");
-   end loop;
-   
+      
+
+      if Nomf = Rectangle then
+	 
+	 Dessin_Rectangle (X,Y,longeur, Largeur,R,V,B);
+	 
+      elsif Nomf = Triangle then
+	 
+	 Dessin_Triangle(AX,AY,BX,BY,CX,CY,R,V,B);  	
+	 
+	 
+      elsif Nomf = Cercle then
+	 
+	 Dessin_Cercle (X,Y,Rayon,R,V,B);
+	 
+      end if;
+      
+      New_Line;
+      Put_Line("P3");
+      Put(n);Put(m);
+      New_Line;
+      Put("255");   
+      New_Line;
+      
+
+      for i in 0..m-1 loop
+	 for j in 0..n-1 loop
+	    Put((image(i,j).Rouge));
+	    Put((image(i,j).Vert));
+	    Put((image(i,j).Bleu));
+	 end loop;
+	 Put_Line("");
+      end loop;
+   end;
     
-    
-    
-    
+
 end synthese;
