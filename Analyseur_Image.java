@@ -65,7 +65,7 @@ public class Analyseur_Image {
 	    // caracteres va stocker le codage de l'image 
 	    String[][] caracteres = null;
 	    if (format_img.equals("P2")) {
-		    caracteres =
+		    caracteres=
 			new String[Integer.parseInt(dimension[0])][Integer.parseInt(dimension[1])];    
 
 		    // fin devient true quand on a terminé
@@ -147,8 +147,16 @@ public class Analyseur_Image {
 
 
 	    // mat va stocker notre image (en transformant les string en int)
-	    Matrice mat = new Matrice( caracteres, dimension[0] , dimension[1]
-				       , nuances_img, format_img );
+	    Matrice mat = null;
+	    MatricePPM mat_ppm = null;
+	    if (format_img.equals("P2")) {
+		mat = new Matrice( caracteres, dimension[0] , dimension[1]
+				       , nuances_img);
+	    }
+	    else {
+		mat_ppm = new MatricePPM( caracteres, dimension[0] , dimension[1]
+				       , nuances_img );
+	    }
 		
 	    
 	    
@@ -175,7 +183,7 @@ public class Analyseur_Image {
 	    else {
 		if (format_img.equals("P3")) {
      		    // Si l'image est en ppm (couleurs)
-		    //mat.analyse_ppm();
+		    //mat_ppm.analyse_ppm();
 		    System.out.println("Analyse terminée ");
 		}
 
