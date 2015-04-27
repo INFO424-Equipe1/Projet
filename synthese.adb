@@ -31,10 +31,9 @@ procedure synthese is
 
 	
    type Matrice is array ( Integer range <> , Integer range <>) of Pixel;
-   image: Matrice(0..N,0..M) ;
   
 	
-   procedure Dessin_Rectangle(x1,y1,longrec,Largrec,R,V,B:in Integer) is 
+   procedure Dessin_Rectangle(x1,y1,longrec,Largrec,R,V,B:in Integer; Image : in out Matrice) is 
    begin
       
    	for i in x1..(x1+Longrec) loop
@@ -48,7 +47,7 @@ procedure synthese is
    
       
       
-   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3,R,V,B: in out Integer) is
+   procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3,R,V,B: in out Integer; Image : in out Matrice) is
       Tempx,Tempy,Y,A:Integer ;
       Delt,Error,Dx,Dy : Float;
       
@@ -195,7 +194,7 @@ procedure synthese is
         
    end Dessin_Triangle;
    
-   procedure Dessin_Cercle (X,Y,Rayon,R,V,B: in integer) is 
+   procedure Dessin_Cercle (X,Y,Rayon,R,V,B: in Integer; Image : in out Matrice) is 
    begin 
       for j in 0..m-1 loop
 	 for i in 0..n-1 loop
@@ -277,7 +276,7 @@ begin
       for j in 0..m-1 loop
 	 for i in 0..n-1 loop 
 	    image(j,i).Rouge:=255;
-	    image(i,j).Vert:=255;
+	    image(j,i).Vert:=255;
 	    image(j,i).Bleu:=255;
 	 end loop;
       end loop;
@@ -285,20 +284,19 @@ begin
 
       if Nomf = Rectangle then
 	 
-	 Dessin_Rectangle (X,Y,longeur, Largeur,R,V,B);
+	 Dessin_Rectangle (X,Y,longeur, Largeur,R,V,B,image);
 	 
       elsif Nomf = Triangle then
 	 
-	 Dessin_Triangle(AX,AY,BX,BY,CX,CY,R,V,B);  	
+	 Dessin_Triangle(AX,AY,BX,BY,CX,CY,R,V,B,image);  	
 	 
 	 
       elsif Nomf = Cercle then
 	 
-	 Dessin_Cercle (X,Y,Rayon,R,V,B);
+	 Dessin_Cercle (X,Y,Rayon,R,V,B,image);
 	 
       end if;
       
-      New_Line;
       Put_Line("P3");
       Put(n);Put(m);
       New_Line;
