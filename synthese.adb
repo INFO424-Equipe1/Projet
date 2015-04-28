@@ -10,18 +10,20 @@ Use Ada.Command_Line;
 
 procedure synthese is
 	
-	
+--Variables globales du programme :	
    C,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B:Integer; 
    N:Integer;
    M:Integer;
 
    
-	
+--Ce type permet la gestion des différentes formes 	
    type Forme is (Rectangle, Triangle ,Cercle);
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
-   Nomf:Forme;
+   Nomf:Forme;--Nom de la forme, on peut avoir une variable qui regroupe les 3 formes différentes 
    
+   
+--Ce type Pixel permet la gestion des couleurs de l'image
    type Pixel is record 
       Rouge : Integer;
       Vert : Integer ; 
@@ -29,10 +31,10 @@ procedure synthese is
    end record ; 
         
 
-	
+--Ce type définit ce qu'est une image : une matrice de taille n,m où chaque case est constituée d'un pixel	
    type Matrice is array ( Integer range <> , Integer range <>) of Pixel;
   
-	
+-- Procédure qui dessine un rectangle en fonction du point d'origine, de sa longeur, de sa largeur, de l'image et de sa couleur. 	
    procedure Dessin_Rectangle(x1,y1,longrec,Largrec,R,V,B:in Integer; Image : in out Matrice) is 
    begin
       
@@ -213,8 +215,8 @@ begin
     
  -- Valeur par défault de l'image : taille 200*300, forme cercle de centre (60,60), de rayon 30 et de couleur Bleu 
   
-   N:=200;
-   M:=300;
+   M:=200;
+   N:=300;
    Nomf:=Cercle;
    X:=60;
    Y:=60;
@@ -226,8 +228,8 @@ begin
    K:=1;
    while K <= Argument_Count loop
       if Argument(K) = "--Taille" then 
-	 N:= Integer'Value(Argument(K+1));
-	 M:= Integer'Value(Argument(K+2));
+	 M:= Integer'Value(Argument(K+1));
+	 N:= Integer'Value(Argument(K+2));
       elsif Argument(K)="--Cercle" then  
 	 Nomf:= Cercle;
 	 X:= Integer'Value(Argument(K+1));
