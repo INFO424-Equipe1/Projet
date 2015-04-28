@@ -4,6 +4,12 @@ public class Pixel {
     private int v;
     private int b;
 
+
+    public Pixel() {
+	this.r = 5;
+	this.v = 5;
+	this.b = 5;
+    }
     public Pixel(int r, int v, int b) {
 	this.r = r;
 	this.v = v;
@@ -36,5 +42,22 @@ public class Pixel {
 	    return "Couleur inconnue" ;
 	}
     }
-
+    public int getR() {
+	return this.r;
+    }
+    public int getV() {
+	return this.v;
+    }
+    public int getB() {
+	return this.b;
+    }
+    public void setR(int r) {
+	this.r = r;
+    }
+    public void setV(int v) {
+	this.v = v;
+    }
+    public void setB(int b) {
+	this.b = b;
+    }
 }
