@@ -183,7 +183,7 @@ public class Analyseur_Image {
 	    else {
 		if (format_img.equals("P3")) {
      		    // Si l'image est en ppm (couleurs)
-		    //mat_ppm.analyse_ppm();
+		    mat_ppm.analyse_ppm();
 		    System.out.println("Analyse terminée ");
 		}
 
