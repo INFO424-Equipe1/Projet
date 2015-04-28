@@ -1,3 +1,4 @@
+--Importation des différents package de Ada dont nous avons besoin
 WITH Ada.Text_IO;
 WITH Ada.Integer_Text_IO ; 
 USE Ada.Text_IO;
@@ -11,7 +12,7 @@ Use Ada.Command_Line;
 procedure synthese is
 	
 --Variables globales du programme :	
-   C,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B:Integer; 
+   C,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B,FondR,FondV,FondB:Integer; 
    N:Integer;--nombre de colonnes 
    M:Integer;--nombre de lignes
 
@@ -172,7 +173,7 @@ procedure synthese is
 	       --n'importe quelles couleurs sauf blanc 
 	       C:=C+1;
 	    end if;   
-	    if C=1 and A_cote=true then	  --A_cote est une variable pour vérifier si on rencontre deux pixels adjacents
+	    if C=1 and A_cote=false then	  --A_cote est une variable pour vérifier si on rencontre deux pixels adjacents
 	       Yx:=I;	  
 	    end if;
 	    if C=2 then  
@@ -221,6 +222,9 @@ begin --Debut de la procédure principale
    R:=0;
    V:=0;
    B:=255;
+   FondR:=255;
+   FondV:=255;
+   FondB:=255;
    
    --Lecture des arguments en ligne de commande
    K:=1;
@@ -263,6 +267,28 @@ begin --Debut de la procédure principale
 	 R:=255;
 	 V:=255;
 	 B:=0;
+      elsif Argument(K)="--Fond" then
+	 if Argument(K+1) = "Noir" then
+	    FondR:=0;
+	    FondV:=0;
+	    FondB:=0;
+	 elsif Argument(K+1)="Rouge" then
+	    FondR:=255;
+	    FondV:=0;
+	    FondB:=0;
+	 elsif Argument(K+1)="Vert" then  
+	    FondR:=0;
+	    FondV:=255;
+	    FondB:=0;
+	 elsif Argument(K+1)="Bleu" then
+	    FondR:=0;
+	    FondV:=0;
+	    FondB:=255;
+	 elsif Argument(K+1)="Jaune" then
+	    FondR:=255;
+	    FondV:=255;
+	    FondB:=0;
+	 end if;
       end if;
       K:=K+1;
    end loop;
@@ -275,9 +301,9 @@ begin --Debut de la procédure principale
 --Initialisation de la matrice
       for j in 0..m-1 loop
 	 for i in 0..n-1 loop 
-	    image(j,i).Rouge:=255;
-	    image(j,i).Vert:=255;
-	    image(j,i).Bleu:=255;
+	    image(j,i).Rouge:=FondR;
+	    image(j,i).Vert:=FondV;
+	    image(j,i).Bleu:=FondB;
 	 end loop;
       end loop;
       
