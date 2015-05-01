@@ -12,16 +12,17 @@ Use Ada.Command_Line;
 procedure synthese is
 	
 --Variables globales du programme :	
-   C,X,Y,Ax,Ay,Bx,By,Cx,Cy,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B,FondR,FondV,FondB:Integer; 
+   C,X,Y,Ax,Ay,Bx,By,Cx,Cy,FX,FY,EX,EY,Yx,Zx,longeur,largeur,Rayon,Maxx,Minx,Miny,Maxy,K,R,V,B,FondR,FondV,FondB:Integer; 
+   X2,Y2,Ax2,Ay2,Bx2,By2,Cx2,Cy2,FX2,FY2,EX2,EY2,Longeur2,Largeur2,Rayon2,R2,V2,B2: Integer;
    N:Integer;--nombre de colonnes 
    M:Integer;--nombre de lignes
 
    
 --Ce type permet la gestion des différentes formes 	
-   type Forme is (Rectangle, Triangle ,Cercle);
+   type Forme is (Rectangle, Triangle, Cercle, Droite);
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
-   Nomf:Forme;--Nom de la forme, on peut avoir une variable qui regroupe les 3 formes différentes 
+   Nomf,Nomf2 :Forme;--Nom de la forme, on peut avoir une variable qui regroupe les 3 formes différentes 
    
    
 --Ce type Pixel permet la gestion des couleurs de l'image
@@ -209,6 +210,44 @@ procedure synthese is
       end loop;
       
    end Dessin_Cercle;
+   
+   procedure Dessin_Droite (FX,FY,EX,EY,R,V,B : in out Integer; Image : in out Matrice) is 
+       --Déclaration des variables locales de la procédure
+      Tempx,Tempy,Y:Integer ;
+      Delt,Error,Dx,Dy : Float;
+   begin
+       if EX<=FX then --On utilise le meme algorithme que pour tracer les segments d'un triangle
+	 Tempx := EX;
+	 Tempy := EY;
+	 EX := FX;
+	 EY := FY;
+	 FX := Tempx;
+	 FY :=Tempy;
+      end if;
+      Dx := Float(EX - FX);
+      Dy := Float(EY - FY);
+      Error := 0.0;
+      Delt := abs(Dy/Dx);
+      Y := FY;
+      for I in FX..EX-1 loop
+	 image(Y,I).Rouge:=R;
+	 image(Y,I).Vert:=V;
+	 image(Y,I).Bleu:=B;
+	 Error := Error+Delt;
+	 while Error >= 0.5 loop
+	    if Dy > 0.0 then 
+	       Y:=Y+1;
+	    else
+	       Y:= Y - 1; 
+	    end if;
+	    Error := Error - 1.0; 
+	    image(Y,i).Rouge:=R;
+	    image(Y,i).Vert:=V;
+	    image(Y,i).Bleu:=B;
+	 end loop;
+      end loop;
+   end Dessin_Droite;
+   
          
 begin --Debut de la procédure principale
 
@@ -251,6 +290,37 @@ begin --Debut de la procédure principale
 	 BY:= Integer'Value(Argument(K+4));
 	 CX:= Integer'Value(Argument(K+5));
 	 CY:= Integer'Value(Argument(K+6));
+      elsif Argument(K)="--Droite" then
+	 Nomf:=Droite;
+	 FX:= Integer'Value(Argument(K+1));
+	 FY:= Integer'Value(Argument(K+2));
+	 EX:= Integer'Value(Argument(K+3));
+	 EY:= Integer'Value(Argument(K+4));
+	  elsif Argument(K)="---Cercle" then  
+	 Nomf2:= Cercle;
+	 X2:= Integer'Value(Argument(K+1));
+	 Y2:= Integer'Value(Argument(K+2));
+	 Rayon2:= Integer'Value(Argument(K+3));
+      elsif Argument(K)="---Rectangle" then
+	 Nomf2 := Rectangle;
+	 X2:= Integer'Value(Argument(K+1));
+	 Y2:= Integer'Value(Argument(K+2));
+	 Longeur2:= Integer'Value(Argument(K+3));
+	 Largeur2:= Integer'Value(Argument(K+4));
+      elsif Argument(K)="---Triangle" then
+	 Nomf2:= Triangle;
+	 AX2:= Integer'Value(Argument(K+1));
+	 AY2:= Integer'Value(Argument(K+2));
+	 BX2:= Integer'Value(Argument(K+3));
+	 BY2:= Integer'Value(Argument(K+4));
+	 CX2:= Integer'Value(Argument(K+5));
+	 CY2:= Integer'Value(Argument(K+6));
+      elsif Argument(K)="---Droite" then
+	 Nomf2:=Droite;
+	 FX2:= Integer'Value(Argument(K+1));
+	 FY2:= Integer'Value(Argument(K+2));
+	 EX2:= Integer'Value(Argument(K+3));
+	 EY2:= Integer'Value(Argument(K+4));
       elsif Argument(K)="--Rouge" then
 	 R:= 255;
 	 V:=0;
@@ -267,6 +337,22 @@ begin --Debut de la procédure principale
 	 R:=255;
 	 V:=255;
 	 B:=0;
+      elsif Argument(K)="---Rouge" then
+	 R2:= 255;
+	 V2:=0;
+	 B2:=0;
+      elsif Argument(K)="---Vert" then 
+	 R2:=0;
+	 V2:=255;
+	 B2:=0;
+      elsif Argument(K)="---Bleu" then 
+	 R2:=0;
+	 V2:=0;
+	 B2:=255;
+      elsif Argument(K)="---Jaune" then 
+	 R2:=255;
+	 V2:=255;
+	 B2:=0;
       elsif Argument(K)="--Fond" then
 	 if Argument(K+1) = "Noir" then
 	    FondR:=0;
@@ -307,7 +393,7 @@ begin --Debut de la procédure principale
 	 end loop;
       end loop;
       
---Test de la forme de la figure et lancement de la procédure correspondante 
+--Test de la première forme de la figure et lancement de la procédure correspondante 
       if Nomf = Rectangle then 
 	 Dessin_Rectangle (X,Y,longeur, Largeur,R,V,B,image);
 	 
@@ -316,8 +402,26 @@ begin --Debut de la procédure principale
 	  
       elsif Nomf = Cercle then 
 	 Dessin_Cercle (X,Y,Rayon,R,V,B,image);
+	 
+      elsif Nomf = Droite then 
+	 Dessin_Droite (FX,FY,EX,EY,R,V,B,Image);
+	 
       end if;
       
+       if Nomf2 = Rectangle then 
+	 Dessin_Rectangle (X2,Y2,Longeur2, Largeur2,R2,V2,B2,image);
+	 
+      elsif Nomf2 = Triangle then
+	 Dessin_Triangle(AX2,AY2,BX2,BY2,CX2,CY2,R2,V2,B2,image);  	
+	  
+      elsif Nomf2 = Cercle then 
+	 Dessin_Cercle (X2,Y2,Rayon2,R2,V2,B2,image);
+	 
+      elsif Nomf2 = Droite then 
+	 Dessin_Droite (FX2,FY2,EX2,EY2,R2,V2,B2,Image);
+	 
+       end if ;
+             
       --Affichage des octets initiaux
       Put_Line("P3");
       Put(n);Put(m);
