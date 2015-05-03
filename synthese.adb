@@ -19,7 +19,7 @@ procedure synthese is
 
    
 --Ce type permet la gestion des différentes formes 	
-   type Forme is (Rectangle, Triangle, Cercle, Droite);
+   type Forme is (Rectangle, Triangle, Cercle, Droite, Rien);
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
    Nomf :Forme;--Nom de la forme, on peut avoir une variable qui regroupe les 3 formes différentes 
@@ -265,6 +265,7 @@ begin --Debut de la procédure principale
    FondR:=255;
    FondV:=255;
    FondB:=255;
+   Nomf2:=Rien;
    
    --Lecture des arguments en ligne de commande
    K:=1;
