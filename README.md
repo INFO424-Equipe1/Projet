@@ -27,4 +27,4 @@ Instructions :
 
 
 	Pour l'analyse :
-	$ java -cp . Analyseur_Image < image.pgm
+	$ java -cp . Analyseur_Image < image.ppm
