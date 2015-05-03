@@ -22,8 +22,8 @@ procedure synthese is
    type Forme is (Rectangle, Triangle, Cercle, Droite);
    package Forme_Io is new Enumeration_Io(Forme);
    use Forme_Io;
-   Nomf,Nomf2 :Forme;--Nom de la forme, on peut avoir une variable qui regroupe les 3 formes différentes 
-   
+   Nomf :Forme;--Nom de la forme, on peut avoir une variable qui regroupe les 3 formes différentes 
+   Nomf2 : Forme;
    
 --Ce type Pixel permet la gestion des couleurs de l'image
    type Pixel is record 
@@ -37,30 +37,30 @@ procedure synthese is
    type Matrice is array ( Integer range <> , Integer range <>) of Pixel;
   
    -- Procédure qui dessine un rectangle en fonction du point d'origine, de sa longeur (sur l'axe horizontale),
-   --de sa largeur (sur l'axe verticale), de l'image et de sa couleur. 	
-   procedure Dessin_Rectangle(x1,y1,longrec,Largrec,R,V,B:in Integer; Image : in out Matrice) is 
+   -- de sa largeur (sur l'axe verticale), de l'image et de sa couleur. 	
+   procedure Dessin_Rectangle(x1,y1,longrec,Largrec,R,V,B:in Integer; Image : in out Matrice) is
    begin
       
-   	for i in x1..(x1+Longrec) loop
-	   for j in y1..y1+largrec loop
-	       image(J,i).Rouge:=R;
-	       image(J,i).Vert:=V;
-	       image(J,i).Bleu:=B; 
-	   end loop;
-   	end loop;
+      for i in x1..(x1+Longrec)-1 loop
+	 for j in y1..y1+Largrec-1 loop
+	    Image(J,I).Rouge:=R;
+	    image(J,i).Vert:=V;
+	    image(J,i).Bleu:=B;
+	 end loop;
+      end loop;
    end Dessin_Rectangle;
    
       
-  -- Procédure qui dessine un rectangle en fonction de ces trois points caractéristiques, de l'image et de sa couleur     
+  -- Procédure qui dessine un triangle en fonction de ces trois points caractéristiques, de l'image et de sa couleur     
    procedure Dessin_Triangle (X1,Y1,X2,Y2,X3,Y3,R,V,B: in out Integer; Image : in out Matrice) is
-      --Déclaration des variables locales de la procédure
+      -- Déclaration des variables locales de la procédure
       Tempx,Tempy,Y:Integer ;
       A_Cote : boolean;
       Delt,Error,Dx,Dy : Float;
       	 
    begin
       -- Si la base n'est pas AB, on cherche la base et on change les points afin que quelque soit le cas, la base soit AB
-      if Y1=Y3 then --Comme le triangle est à base horizontale, il doit posséder deux points possédant la meme coordonnée verticale 
+      if Y1=Y3 then--Comme le triangle est à base horizontale, il doit posséder deux points possédant la meme coordonnée verticale 
 	 --On teste pour les points AC
 	 Tempx := X3;
 	 Tempy := Y3;
@@ -79,7 +79,7 @@ procedure synthese is
 	 Y1 := Tempy;
       end if;
       end if;
-          -- En arrivant à cette étape on a donc Y1=Y2, on construit donc la base entre le point A et le point B
+      -- En arrivant à cette étape on a donc Y1=Y2, on construit donc la base entre le point A et le point B
       if X1>=X2 then 	
 	 Tempx :=X1;
 	 X1:=X2;
@@ -89,15 +89,15 @@ procedure synthese is
 	 Y2:=Tempy;
       end if;
       for I in X1..X2 loop  	 
-	  image(Y1,I).Rouge:=R;
-	  image(Y1,I).Vert:=V;
-	  image(Y1,I).Bleu:=B;
+	 image(Y1,I).Rouge:=R;
+	 image(Y1,I).Vert:=V;
+	 image(Y1,I).Bleu:=B;
       End loop;
       
       
       -- Bresenham's line algorithm 
-      --Cet algorithme nous permet de trcaer les deux segments restants, c'est à dire AC et BC 
-      if X3<=X1 then --On trace AC
+      -- Cet algorithme nous permet de trcaer les deux segments restants, c'est à dire AC et BC 
+      if X3<=X1 then--On trace AC
 	 Tempx := X3;
 	 Tempy := Y3;
 	 X3 := X1;
@@ -119,9 +119,9 @@ procedure synthese is
 	    if Dy > 0.0 then 
 	       Y:=Y+1;
 	    else
-	       Y:= Y - 1; 
+	       Y:= Y - 1;
 	    end if;
-	    Error := Error - 1.0; 
+	    Error := Error - 1.0;
 	    image(Y,i).Rouge:=R;
 	    image(Y,i).Vert:=V;
 	    image(Y,i).Bleu:=B;
@@ -160,35 +160,35 @@ procedure synthese is
 	 end loop;
       end loop;
      
---Maintenant que nous possédons les trois segments, il nous suffit de remplir le triangle
-      --On définit l'intervale dans lequel doit se concentrer notre méthode de remplissage
+-- Maintenant que nous possédons les trois segments, il nous suffit de remplir le triangle
+      -- On définit l'intervale dans lequel doit se concentrer notre méthode de remplissage
       Minx := Integer'Min(Integer'Min (AX,BX),CX);
       Maxx := Integer'Max(Integer'Max (AX,BX),CX);
       Miny := Integer'Min(Integer'Min (AY,BY),CY);
       Maxy := Integer'Max(Integer'Max (AY,BY),CY);
-      for J in Miny-1..Maxy+1 loop	    
+      for J in Miny..Maxy loop	    
 	 C:=0;
 	 A_cote:=false;
 	 for I in Minx..Maxx loop
-	    if image(J,I).Rouge/=255 or image(J,I).Vert/=255 or image(J,I).Bleu/=255 then
-	       --n'importe quelles couleurs sauf blanc 
+	    if image(J,I).Rouge /= FondR or image(J,I).Vert /= FondV or image(J,I).Bleu /= FondB then
+	       -- n'importe quelles couleurs sauf celle du fond
 	       C:=C+1;
 	    end if;   
-	    if C=1 and A_cote=false then	  --A_cote est une variable pour vérifier si on rencontre deux pixels adjacents
+	    if C=1 and A_cote=false then -- A_cote est une variable pour vérifier si on rencontre deux pixels adjacents
 	       Yx:=I;	  
 	    end if;
-	    if C=2 then  
+	    if C=2 then
 	       Zx:=I;  
 	       if Zx=Yx+1 then --Si le test est vrai on recommence à chercher à un autre pixel sinon on remplit le triangle 
 		  Yx:=Zx;
 		  C:=1;
 		  A_cote:=true;
-	       else		  
+	       else	
 		  for U in Yx..Zx loop
-   		     image(J,U).Rouge:=R;		     
+   		     image(J,U).Rouge:=R;
 		     image(J,U).Vert:=V;		     			
 		     image(J,U).Bleu:=B;		     
-		  end loop;		  
+		  end loop;		 
 	       end if;	       
 	    end if;
 	 end loop;
@@ -197,11 +197,11 @@ procedure synthese is
    end Dessin_Triangle;
    
      -- Procédure qui dessine un cercle en fonction des coordonnées de son centre, son rayon, l'image et de sa couleur
-   procedure Dessin_Cercle (X,Y,Rayon,R,V,B: in Integer; Image : in out Matrice) is 
+   procedure Dessin_Cercle (X,Y,Rayon,R,V,B: in Integer; Image : in out Matrice) is
    begin 
       for j in 0..m-1 loop
 	 for i in 0..n-1 loop
-	    if (J-X)**2+(I-Y)**2<= Rayon**2 then 
+	    if (J-X)**2+(I-Y)**2 <= Rayon**2 then
 	       image(j,i).Rouge:=R;
 	       image(j,i).Vert:=V;
 	       image(j,i).Bleu:=B;
@@ -211,12 +211,13 @@ procedure synthese is
       
    end Dessin_Cercle;
    
-   procedure Dessin_Droite (FX,FY,EX,EY,R,V,B : in out Integer; Image : in out Matrice) is 
-       --Déclaration des variables locales de la procédure
+   procedure Dessin_Droite (FX,FY,EX,EY,R,V,B : in out Integer; Image : in out Matrice) is
+      --Déclaration des variables locales de la procédure
       Tempx,Tempy,Y:Integer ;
       Delt,Error,Dx,Dy : Float;
    begin
-       if EX<=FX then --On utilise le meme algorithme que pour tracer les segments d'un triangle
+      -- Bresenham's line algorithm 
+      if EX<=FX then --On utilise le meme algorithme que pour tracer les segments d'un triangle
 	 Tempx := EX;
 	 Tempy := EY;
 	 EX := FX;
@@ -238,7 +239,7 @@ procedure synthese is
 	    if Dy > 0.0 then 
 	       Y:=Y+1;
 	    else
-	       Y:= Y - 1; 
+	       Y:= Y - 1;
 	    end if;
 	    Error := Error - 1.0; 
 	    image(Y,i).Rouge:=R;
@@ -296,7 +297,7 @@ begin --Debut de la procédure principale
 	 FY:= Integer'Value(Argument(K+2));
 	 EX:= Integer'Value(Argument(K+3));
 	 EY:= Integer'Value(Argument(K+4));
-	  elsif Argument(K)="---Cercle" then  
+      elsif Argument(K)="---Cercle" then
 	 Nomf2:= Cercle;
 	 X2:= Integer'Value(Argument(K+1));
 	 Y2:= Integer'Value(Argument(K+2));
@@ -376,11 +377,12 @@ begin --Debut de la procédure principale
 	    FondB:=0;
 	 end if;
       end if;
+
       K:=K+1;
    end loop;
    
    --Declaration de l'image
-   declare        
+   declare  
       image : Matrice(0..m,0..n);
    begin
         
@@ -394,7 +396,7 @@ begin --Debut de la procédure principale
       end loop;
       
 --Test de la première forme de la figure et lancement de la procédure correspondante 
-      if Nomf = Rectangle then 
+      if Nomf = Rectangle then
 	 Dessin_Rectangle (X,Y,longeur, Largeur,R,V,B,image);
 	 
       elsif Nomf = Triangle then
@@ -408,11 +410,11 @@ begin --Debut de la procédure principale
 	 
       end if;
       
-       if Nomf2 = Rectangle then 
+      if Nomf2 = Rectangle then 
 	 Dessin_Rectangle (X2,Y2,Longeur2, Largeur2,R2,V2,B2,image);
 	 
       elsif Nomf2 = Triangle then
-	 Dessin_Triangle(AX2,AY2,BX2,BY2,CX2,CY2,R2,V2,B2,image);  	
+	 Dessin_Triangle(AX2,AY2,BX2,BY2,CX2,CY2,R2,V2,B2,image);
 	  
       elsif Nomf2 = Cercle then 
 	 Dessin_Cercle (X2,Y2,Rayon2,R2,V2,B2,image);
@@ -420,7 +422,7 @@ begin --Debut de la procédure principale
       elsif Nomf2 = Droite then 
 	 Dessin_Droite (FX2,FY2,EX2,EY2,R2,V2,B2,Image);
 	 
-       end if ;
+      end if ;
              
       --Affichage des octets initiaux
       Put_Line("P3");
@@ -439,6 +441,5 @@ begin --Debut de la procédure principale
 	 Put_Line("");
       end loop;
    end;
-    
 
 end synthese;
