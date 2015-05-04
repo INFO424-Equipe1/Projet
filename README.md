@@ -2,7 +2,7 @@
 Toute la documentation pour le projet
 
 Instructions :
- - Être invité au débot sur github
+ - Être invité au dépot sur github
  - Se placer dans le répertoire local prévu pour le Projet
  - Importer le projet
 	$ git clone https://github.com/INFO424-Equipe1/Projet.git
