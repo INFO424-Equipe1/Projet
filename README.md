@@ -1,8 +1,9 @@
-# Projet
+# Projet Info424 - Equipe 1
 Toute la documentation pour le projet
 
 Instructions :
- - Se placer dans le répertoire prévu pour le Projet
+ - Être invité au débot sur github
+ - Se placer dans le répertoire local prévu pour le Projet
  - Importer le projet
 	$ git clone https://github.com/INFO424-Equipe1/Projet.git
  - Se placer dans Projet
