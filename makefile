@@ -4,7 +4,7 @@ synthese : synthese.adb
 	gnatmake synthese.adb
 
 Analyseur_Image.class : Analyseur_Image.java
-	javac -cp . Analyseur_Image.java Matrice.java
+	javac -cp . Analyseur_Image.java Matrice.java MatricePPM.java Pixel.java
 
 clean :
 
